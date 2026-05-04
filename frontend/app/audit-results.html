@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultados de Auditoría - EchoSEO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+</head>
+<body class="results-page">
+  <header id="hdr" class="header">
+    <div class="header-wrapper">
+      <div class="logo">
+        <span style="color: #7b61ff">Echo</span>SEO
+      </div>
+      <div class="header-actions"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="results-container">
+      <div id="resultsContainer">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script src="js/services/seoService.js"></script>
+  <script src="js/services/authService.js"></script>
+  <script>
+    // Cargar y mostrar resultados cuando la página cargue
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Obtener audit_id de la URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const auditId = urlParams.get('id');
+
+      if (!auditId) {
+        document.getElementById("resultsContainer").innerHTML = `
+          <div class="error-message">
+            No se especificó una auditoría. 
+            <a href="index.html" style="color: inherit; text-decoration: underline;">Volver al inicio</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Obtener resultados
+      const audit = await window.seoService.getAuditResults(auditId);
+
+      if (!audit) {
+        document.getElementById("resultsContainer").innerHTML = `
+          <div class="error-message">
+            No se encontraron resultados para esta auditoría.
+            <a href="index.html" style="color: inherit; text-decoration: underline;">Volver al inicio</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Si la auditoría aún está en proceso, verificar periódicamente
+      if (audit.status === 'pending' || audit.status === 'processing') {
+        await window.seoService.checkAuditStatus(auditId);
+      } else {
+        // Mostrar resultados
+        window.seoService.displayResults(audit);
+      }
+    });
+  </script>
+</body>
+</html>

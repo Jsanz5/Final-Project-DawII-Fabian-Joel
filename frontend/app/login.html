@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión - EchoSEO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="auth-page">
+    <div class="auth-card">
+      <h2><span style="color: #7b61ff">Echo</span>SEO</h2>
+      <p>Bienvenido de nuevo</p>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Correo Electrónico</label>
+          <input
+            type="email"
+            id="loginEmail"
+            class="form-control"
+            placeholder="tu@empresa.com"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Contraseña</label>
+          <input
+            type="password"
+            id="loginPassword"
+            class="form-control"
+            placeholder="********"
+            required
+          />
+        </div>
+        <button type="submit" class="auth-btn" id="loginBtn">Entrar</button>
+      </form>
+
+      <div class="auth-links">
+        ¿No tienes una cuenta? <a href="register.html">Regístrate</a>
+      </div>
+    </div>
+
+    <script src="js/services/authService.js"></script>
+  </body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EchoSEO - La plataforma líder de SEO e IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css"> 
+</head>
+
+<body>
+  <header id="hdr">
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <img src="./assets/img/EchoSEO-Logo.png" alt="EchoSEO" class="header-logo-img"> 
+      </div>
+    </a>
+    <div class="nav-wrapper" id="navWrapper">
+      <nav>
+        <!-- <a href="#Dash">Dashboard</a> -->
+        <a href="#Herramientas">Herramientas</a>
+        <a href="#Soluciones">Soluciones</a>
+        <!-- <a href="#Blog">Blog</a> -->
+        <a href="#Reseñas">Reseñas</a>
+      </nav>
+      <div class="header-actions">
+        <button class="btn-purple" onclick="window.location.href='login.html'">Iniciar sesión</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSideMenu()" aria-label="Abrir menú">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+ 
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-stripes"></div>
+
+    <h1>Analiza, mejora y <span class="purple">domina</span><br>tu presencia <span class="orange">online</span></h1>
+
+    <p class="hero-sub">Descubre por qué miles de empresas confían en nuestras métricas para crecer en buscadores y
+      plataformas de IA. Datos en tiempo real.</p>
+
+    <div class="hero-search">
+      <div class="search-box">
+        <div class="search-input-row">
+          <input class="search-input" type="text" placeholder="Escribe tu sitio web" id="heroInput">
+        </div>
+        <div class="search-divider"></div>
+        <button class="btn-search-full" onclick="handleSearch()">🚀 Empieza tu análisis gratuito</button>
+      </div>
+    </div>
+    <p class="hero-note">✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ 14 días gratis &nbsp;·&nbsp; ✓ Cancela cuando quieras
+    </p>
+
+    <!-- ══ VISIBILITY OVERVIEW WIDGET ══ -->
+    <div class="widget-outer">
+      <div class="widget-card">
+
+        <div class="wg-title">Visibility Overview</div>
+
+        <!-- Tabs + Dropdown row -->
+        <div class="wg-loc-row">
+          <div class="wg-tabs">
+            <div class="wg-tab active" onclick="setLocation(this,'Worldwide')">Worldwide</div>
+            <div class="wg-tab" onclick="setLocation(this,'US')">US</div>
+            <div class="wg-tab" onclick="setLocation(this,'UK')">UK</div>
+            <div class="wg-tab" onclick="setLocation(this,'CA')">CA</div>
+            <div class="wg-tab" onclick="setLocation(this,'···')">···</div>
+          </div>
+          <div class="wg-dropdown-wrap">
+            <div class="wg-dropdown-btn" id="ddBtn" onclick="toggleDropdown()">
+              <span id="ddLabel">All AI platforms</span>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M3 5l4 4 4-4" stroke="#7B61FF" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </div>
+            <div class="wg-dropdown-menu" id="ddMenu" style="display:none">
+              <div class="wg-dropdown-item" onclick="selectPlatform('All AI platforms', 90, 'Great', -5)">All AI
+                platforms</div>
+              <div class="wg-dropdown-item selected" onclick="selectPlatform('ChatGPT', 90, 'Great', -3)">ChatGPT</div>
+              <div class="wg-dropdown-item" onclick="selectPlatform('AI Overview', 74, 'Good', -12)">AI Overview</div>
+              <div class="wg-dropdown-item" onclick="selectPlatform('AI Mode', 81, 'Good', -8)">AI Mode</div>
+              <div class="wg-dropdown-item" onclick="selectPlatform('Gemini', 67, 'Average', -18)">Gemini</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="wg-body">
+
+          <!-- Gauge -->
+          <div class="wg-gauge-col">
+            <div class="gauge-wrap">
+              <!-- Semi-circle SVG gauge -->
+              <svg class="gauge-svg" viewBox="0 0 180 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background track -->
+                <path d="M18 90 A72 72 0 0 1 162 90" stroke="#E5E7EB" stroke-width="16" stroke-linecap="round"
+                  fill="none" />
+                <!-- Green fill -->
+                <path id="gaugeArc" d="M18 90 A72 72 0 0 1 162 90" stroke="url(#gaugeGrad)" stroke-width="16"
+                  stroke-linecap="round" fill="none" stroke-dasharray="226" stroke-dashoffset="226">
+                  <animate id="gaugeAnim" attributeName="stroke-dashoffset" from="226" to="22.6" dur="1.4s"
+                    fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" />
+                </path>
+                <!-- Arrow indicator -->
+                <g id="gaugeArrow"
+                  style="transform-origin:90px 90px;transform:rotate(-85deg);transition:transform 1.2s cubic-bezier(.34,1.2,.64,1)">
+                  <polygon points="90,28 86,42 94,42" fill="#7B61FF" />
+                </g>
+                <defs>
+                  <linearGradient id="gaugeGrad" x1="18" y1="90" x2="162" y2="90" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#10B981" />
+                    <stop offset="100%" stop-color="#22C896" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="gauge-score">
+                <div>
+                  <span class="gauge-num count-up" id="gaugeNum">90</span>
+                  <span class="gauge-denom"> /100</span>
+                </div>
+                <div class="gauge-label" id="gaugeLabel">Great</div>
+              </div>
+            </div>
+
+            <div class="platform-badge" id="platformBadge">
+              🤖 ChatGPT
+            </div>
+
+            <div class="gauge-desc" id="gaugeDesc">
+              Frequently mentioned and often<br>preferred by LLMs
+            </div>
+          </div>
+
+          <!-- Line Chart -->
+          <div class="wg-chart-col">
+            <div class="wg-chart-legend">
+              <div class="wg-legend-item">
+                <div class="legend-dot" style="background:#F59E0B"></div>ChatGPT
+              </div>
+              <div class="wg-legend-item">
+                <div class="legend-dot" style="background:#60A5FA"></div>AI Overview
+              </div>
+              <div class="wg-legend-item">
+                <div class="legend-dot" style="background:#A78BFA"></div>AI Mode
+              </div>
+            </div>
+            <div class="wg-chart-svg-wrap">
+              <svg id="chartSvg" viewBox="0 0 300 130" width="100%" height="130" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="fillGold" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(245,158,11,0.18)" />
+                    <stop offset="100%" stop-color="rgba(245,158,11,0)" />
+                  </linearGradient>
+                  <linearGradient id="fillBlue" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(96,165,250,0.14)" />
+                    <stop offset="100%" stop-color="rgba(96,165,250,0)" />
+                  </linearGradient>
+                </defs>
+                <!-- Grid -->
+                <line x1="0" y1="20" x2="300" y2="20" stroke="#E5E7EB" stroke-width="1" />
+                <line x1="0" y1="50" x2="300" y2="50" stroke="#E5E7EB" stroke-width="1" />
+                <line x1="0" y1="80" x2="300" y2="80" stroke="#E5E7EB" stroke-width="1" />
+                <line x1="0" y1="110" x2="300" y2="110" stroke="#E5E7EB" stroke-width="1" />
+                <!-- Y labels -->
+                <text x="0" y="18" font-size="8" fill="#9CA3AF" font-family="Inter,sans-serif">100</text>
+                <text x="0" y="48" font-size="8" fill="#9CA3AF" font-family="Inter,sans-serif">80</text>
+                <text x="0" y="78" font-size="8" fill="#9CA3AF" font-family="Inter,sans-serif">60</text>
+                <text x="0" y="108" font-size="8" fill="#9CA3AF" font-family="Inter,sans-serif">40</text>
+                <!-- Area gold -->
+                <path id="areaGold"
+                  d="M20,100 C60,95 80,85 110,75 C140,65 170,45 220,30 C250,22 270,18 290,15 L290,120 L20,120 Z"
+                  fill="url(#fillGold)" opacity="0" />
+                <!-- Area blue -->
+                <path id="areaBlue"
+                  d="M20,105 C60,100 90,95 120,88 C155,80 185,68 220,58 C250,50 270,46 290,42 L290,120 L20,120 Z"
+                  fill="url(#fillBlue)" opacity="0" />
+                <!-- Line gold (ChatGPT) -->
+                <path id="lineGold" d="M20,100 C60,95 80,85 110,75 C140,65 170,45 220,30 C250,22 270,18 290,15"
+                  fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" class="chart-line-animated" />
+                <!-- Line blue (AI Overview) -->
+                <path id="lineBlue" d="M20,105 C60,100 90,95 120,88 C155,80 185,68 220,58 C250,50 270,46 290,42"
+                  fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round" class="chart-line-animated"
+                  style="animation-delay:.3s" />
+                <!-- Line purple (AI Mode) -->
+                <path id="linePurple" d="M20,112 C60,108 90,104 120,100 C155,94 185,86 220,78 C250,72 270,68 290,63"
+                  fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 3"
+                  class="chart-line-animated" style="animation-delay:.6s" />
+                <!-- End dots -->
+                <circle cx="290" cy="15" r="4" fill="white" stroke="#F59E0B" stroke-width="2" opacity="0"
+                  id="dotGold" />
+                <circle cx="290" cy="42" r="4" fill="white" stroke="#60A5FA" stroke-width="2" opacity="0"
+                  id="dotBlue" />
+                <circle cx="290" cy="63" r="4" fill="white" stroke="#A78BFA" stroke-width="2" opacity="0"
+                  id="dotPurple" />
+              </svg>
+            </div>
+            <div class="wg-x-labels">
+              <span>Apr 2026</span>
+              <span>May 2026</span>
+              <span>Jun 2026</span>
+              <span>Jul 2026</span>
+              <span>Aug 2026</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- LOGOS -->
+  <div class="logos-belt">
+    <p class="logos-belt-label">Empresas que confían en EchoSeo</p>
+    <div class="logos-track-wrap">
+      <div class="logos-track">
+        <span class="brand">FedEx</span><span class="brand">Amazon</span><span class="brand">Airbnb</span>
+        <span class="brand">NETFLIX</span><span class="brand">Rappi</span><span class="brand">Falabella</span>
+        <span class="brand">Despegar</span><span class="brand">Cabify</span><span class="brand">Globant</span><span
+          class="brand">Samsung</span>
+        <span class="brand">FedEx</span><span class="brand">Amazon</span><span class="brand">Airbnb</span>
+        <span class="brand">NETFLIX</span><span class="brand">Rappi</span><span class="brand">Falabella</span>
+        <span class="brand">Despegar</span><span class="brand">Cabify</span><span class="brand">Globant</span><span
+          class="brand">Samsung</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="section">
+    <div class="section-inner" id="Herramientas">
+      <p class="section-label reveal">Herramientas potentes</p>
+      <h2 class="section-h reveal">Todo lo que necesitas para <span class="hi">liderar</span> Google y la IA</h2>
+      <p class="section-desc reveal">Una sola plataforma con más de 55 herramientas para SEO, SEM, contenido y
+        visibilidad en plataformas de IA. Datos de más de 190 países.</p>
+      <div class="features-grid">
+        <div class="feat-card reveal">
+          <div class="feat-icon fi-purple">🛠</div>
+          <div class="feat-title">Auditoría SEO completa</div>
+          <p class="feat-desc">Detecta errores técnicos, problemas de velocidad, metadatos rotos y todo lo que frena tu
+            posicionamiento en segundos.</p>
+        </div>
+        <div class="feat-card reveal">
+          <div class="feat-icon fi-orange">🔍</div>
+          <div class="feat-title">Investigación de keywords</div>
+          <p class="feat-desc">Encuentra las palabras clave con mayor potencial. Filtra por dificultad, intención y
+            volumen mensual.</p>
+        </div>
+        <div class="feat-card reveal">
+          <div class="feat-icon fi-green">🤖</div>
+          <div class="feat-title">AI Visibility Tracking</div>
+          <p class="feat-desc">Mide tu presencia en ChatGPT, Gemini, AI Overview y más. Sé el primero al que los LLMs
+            recomiendan.</p>
+        </div>
+        <div class="feat-card reveal">
+          <div class="feat-icon fi-blue">📊</div>
+          <div class="feat-title">Seguimiento de rankings</div>
+          <p class="feat-desc">Monitorea tus posiciones día a día en Google, Yahoo y Bing. Alertas automáticas ante
+            cualquier cambio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bg">
+    <div class="stats-grid">
+      <div class="reveal">
+        <div class="stat-num">42K+</div>
+        <div class="stat-lbl">empresas activas</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-num">2.1B</div>
+        <div class="stat-lbl">keywords en base de datos</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-num">190+</div>
+        <div class="stat-lbl">países monitoreados</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-num">99.9%</div>
+        <div class="stat-lbl">uptime garantizado</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reseñas -->
+  <section class="testi-section" id="Reseñas">
+    <div class="section-inner">
+      <p class="section-label reveal">Casos de éxito</p>
+      <h2 class="section-h reveal">Resultados reales de <span class="hi">clientes reales</span></h2>
+      <div class="testi-grid">
+        <div class="testi-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testi-text">"En tres meses duplicamos el tráfico orgánico. EchoSeo nos dio visibilidad total sobre
+            lo que hacíamos mal y cómo corregirlo."</p>
+          <div class="testi-author">
+            <div class="av av1">CR</div>
+            <div>
+              <div class="au-name">Carlos Restrepo</div>
+              <div class="au-role">CMO · TiendaPlus Colombia</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testi-text">"La herramienta de AI Visibility es increíble. Ahora sabemos exactamente en qué
+            plataformas de IA nos mencionan y cómo mejorar."</p>
+          <div class="testi-author">
+            <div class="av av2">LM</div>
+            <div>
+              <div class="au-name">Lucía Montoya</div>
+              <div class="au-role">SEO Lead · AgenciaDigital MX</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testi-text">"Los reportes automáticos nos ahorran 8 horas semanales. Entregamos dashboards
+            profesionales con un solo clic."</p>
+          <div class="testi-author">
+            <div class="av av3">JP</div>
+            <div>
+              <div class="au-name">Javier Pérez</div>
+              <div class="au-role">Fundador · VisibilidadWeb ARG</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final" id="Soluciones">
+    <h2>Empieza a crecer hoy mismo</h2>
+    <p>Tu competencia ya usa datos para tomar decisiones. No te quedes atrás.</p>
+    <div class="cta-final-btns">
+      <button class="btn-white">🚀 Empieza tu análisis gratuito</button>
+      <button class="btn-outline-white">Hablar con ventas</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-mark">📊</div><span class="logo-name" style="color:white">Echo<em>SEO</em></span>
+        </a>
+        <p>La plataforma de inteligencia SEO más completa para agencias, marcas y profesionales digitales.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Herramientas</h4>
+        <a href="#">Auditoría SEO</a><a href="#">Keyword Research</a><a href="#">AI Visibility</a><a href="#">Rank
+          Tracker</a>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <a href="#">Sobre nosotros</a><a href="#">Blog SEO</a><a href="#">Casos de éxito</a><a href="#">Afiliados</a>
+      </div>
+      <div class="footer-col">
+        <h4>Soporte</h4>
+        <a href="#">Documentación</a><a href="#">Centro de ayuda</a><a href="#">Webinars</a><a href="#">Contacto</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 EchoSeo | Todos los derechos reservados.</span>
+      <span><a href="#">Privacidad</a><a href="#">Términos</a><a href="#">Cookies</a></span>
+    </div>
+  </footer>
+
+ <script src="js/app.js"></script>
+</body>
+</html>
