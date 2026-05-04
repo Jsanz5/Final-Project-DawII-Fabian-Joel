@@ -1,0 +1,425 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SEO Analyzer API",
+    "description": "Microservicio de análisis SEO con scraping e IA",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/seo-analysis/analyze": {
+      "post": {
+        "tags": ["seo-analysis"],
+        "summary": "Analyze Seo",
+        "operationId": "analyze_seo_seo_analysis_analyze_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SEOAnalysisRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SEOAnalysisResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seo-analysis/generate-content": {
+      "post": {
+        "tags": ["seo-analysis"],
+        "summary": "Generate Seo Content",
+        "operationId": "generate_seo_content_seo_analysis_generate_content_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentGenerationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentGenerationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seo-analysis/audit": {
+      "post": {
+        "tags": ["seo-analysis"],
+        "summary": "Audit Seo",
+        "operationId": "audit_seo_seo_analysis_audit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SEOAuditRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SEOAuditResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CompetitorData": {
+        "properties": {
+          "url": { "type": "string", "title": "Url" },
+          "title": { "type": "string", "title": "Title" },
+          "h1": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "H1"
+          },
+          "h2": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "H2"
+          },
+          "meta_description": { "type": "string", "title": "Meta Description" },
+          "preview": { "type": "string", "title": "Preview" }
+        },
+        "type": "object",
+        "required": ["url", "title", "h1", "h2", "meta_description", "preview"],
+        "title": "CompetitorData"
+      },
+      "ContentGenerationRequest": {
+        "properties": {
+          "topic": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 5,
+            "title": "Topic",
+            "description": "Tema o descripción del negocio"
+          },
+          "content_type": {
+            "$ref": "#/components/schemas/ContentType",
+            "description": "Tipo de contenido: 'articulo' o 'ficha de producto'"
+          },
+          "location": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Location",
+            "description": "Ubicación opcional para SEO local"
+          }
+        },
+        "type": "object",
+        "required": ["topic", "content_type"],
+        "title": "ContentGenerationRequest"
+      },
+      "ContentGenerationResponse": {
+        "properties": {
+          "status": { "type": "string", "title": "Status" },
+          "generated_content": {
+            "$ref": "#/components/schemas/GeneratedContent"
+          }
+        },
+        "type": "object",
+        "required": ["status", "generated_content"],
+        "title": "ContentGenerationResponse"
+      },
+      "ContentType": {
+        "type": "string",
+        "enum": ["articulo", "ficha de producto"],
+        "title": "ContentType"
+      },
+      "GeneratedContent": {
+        "properties": {
+          "meta_title": { "type": "string", "title": "Meta Title" },
+          "meta_description": { "type": "string", "title": "Meta Description" },
+          "h1": { "type": "string", "title": "H1" },
+          "body_content": { "type": "string", "title": "Body Content" },
+          "cta": { "type": "string", "title": "Cta" },
+          "main_keywords": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Main Keywords"
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta_title",
+          "meta_description",
+          "h1",
+          "body_content",
+          "cta",
+          "main_keywords"
+        ],
+        "title": "GeneratedContent"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PageSEOData": {
+        "properties": {
+          "url": { "type": "string", "title": "Url" },
+          "title": { "type": "string", "title": "Title" },
+          "meta_description": { "type": "string", "title": "Meta Description" },
+          "h1": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "H1"
+          },
+          "h2": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "H2"
+          },
+          "h3": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "H3"
+          },
+          "word_count": { "type": "integer", "title": "Word Count" },
+          "missing_alt_images_count": {
+            "type": "integer",
+            "title": "Missing Alt Images Count"
+          },
+          "internal_links_count": {
+            "type": "integer",
+            "title": "Internal Links Count"
+          },
+          "external_links_count": {
+            "type": "integer",
+            "title": "External Links Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "title",
+          "meta_description",
+          "h1",
+          "h2",
+          "h3",
+          "word_count",
+          "missing_alt_images_count",
+          "internal_links_count",
+          "external_links_count"
+        ],
+        "title": "PageSEOData"
+      },
+      "SEOAnalysis": {
+        "properties": {
+          "h1_sugerido": { "type": "string", "title": "H1 Sugerido" },
+          "h2_lista": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "H2 Lista"
+          },
+          "meta_description": { "type": "string", "title": "Meta Description" },
+          "keywords_target": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Keywords Target"
+          },
+          "schema_markup": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Schema Markup"
+          },
+          "internal_links": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Internal Links"
+          },
+          "analysis": {
+            "additionalProperties": { "type": "string" },
+            "type": "object",
+            "title": "Analysis"
+          }
+        },
+        "type": "object",
+        "required": [
+          "h1_sugerido",
+          "h2_lista",
+          "meta_description",
+          "keywords_target",
+          "schema_markup",
+          "internal_links",
+          "analysis"
+        ],
+        "title": "SEOAnalysis"
+      },
+      "SEOAnalysisRequest": {
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Keyword"
+          },
+          "location": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Location"
+          }
+        },
+        "type": "object",
+        "required": ["keyword", "location"],
+        "title": "SEOAnalysisRequest"
+      },
+      "SEOAnalysisResponse": {
+        "properties": {
+          "status": { "type": "string", "title": "Status" },
+          "competitors": {
+            "items": { "$ref": "#/components/schemas/CompetitorData" },
+            "type": "array",
+            "title": "Competitors"
+          },
+          "seo_analysis": { "$ref": "#/components/schemas/SEOAnalysis" }
+        },
+        "type": "object",
+        "required": ["status", "competitors", "seo_analysis"],
+        "title": "SEOAnalysisResponse"
+      },
+      "SEOAuditAnalysis": {
+        "properties": {
+          "errors": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Errors"
+          },
+          "warnings": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "good_practices": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Good Practices"
+          },
+          "global_score": { "type": "integer", "title": "Global Score" },
+          "content_generation": {
+            "type": "string",
+            "title": "Content Generation"
+          },
+          "keyword_suggestions": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Keyword Suggestions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "errors",
+          "warnings",
+          "good_practices",
+          "global_score",
+          "content_generation",
+          "keyword_suggestions"
+        ],
+        "title": "SEOAuditAnalysis"
+      },
+      "SEOAuditRequest": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "URL to analyze"
+          }
+        },
+        "type": "object",
+        "required": ["url"],
+        "title": "SEOAuditRequest"
+      },
+      "SEOAuditResponse": {
+        "properties": {
+          "status": { "type": "string", "title": "Status" },
+          "extracted_data": { "$ref": "#/components/schemas/PageSEOData" },
+          "seo_analysis": { "$ref": "#/components/schemas/SEOAuditAnalysis" }
+        },
+        "type": "object",
+        "required": ["status", "extracted_data", "seo_analysis"],
+        "title": "SEOAuditResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" },
+          "input": { "title": "Input" },
+          "ctx": { "type": "object", "title": "Context" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

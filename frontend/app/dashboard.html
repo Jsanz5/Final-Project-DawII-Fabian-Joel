@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - EchoSEO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="dashboard-page">
+    <div class="dashboard-shell">
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <a href="#" class="logo">
+            <div class="logo-mark">
+              <img
+                src="./assets/img/EchoSEO-Logo.png"
+                alt="EchoSEO"
+                class="header-logo-img"
+              />
+            </div>
+          </a>
+        </div>
+        <nav class="sidebar-nav" aria-label="Secciones">
+          <button class="sidebar-item active" data-panel="audit" type="button">
+            Audit
+          </button>
+          <button class="sidebar-item" data-panel="history" type="button">
+            Historial
+          </button>
+          <button class="sidebar-item" data-panel="content" type="button">
+            Contenido
+          </button>
+          <button class="sidebar-item" data-panel="settings" type="button">
+            Ajustes
+          </button>
+        </nav>
+        <div class="sidebar-footer">
+          <p class="sidebar-caption">Tu panel SEO</p>
+        </div>
+      </aside>
+
+      <main class="dashboard-main">
+        <section class="dashboard-panel active" id="panel-audit">
+          <div class="panel-header">
+            <div>
+              <p class="panel-eyebrow">Dashboard</p>
+              <h1>Audit en tiempo real</h1>
+            </div>
+            <p class="panel-subtitle">
+              Analiza tu sitio con una auditoria SEO instantanea y detecta
+              mejoras criticas.
+            </p>
+          </div>
+
+          <div class="audit-layout">
+            <div class="audit-canvas-card">
+              <div class="canvas-frame" id="canvasFrame">
+                <canvas
+                  id="auditWarpCanvas"
+                  aria-label="Vista interactiva"
+                ></canvas>
+                <div class="audit-loading" id="auditLoading" aria-hidden="true">
+                  <div class="loading-ring"></div>
+                  <p>Analizando sitio...</p>
+                </div>
+                <div class="canvas-overlay">
+                  <h2 class="audit-title">Audita en tiempo real</h2>
+                  <label class="audit-label" for="auditUrlInput"
+                    >URL a analizar</label
+                  >
+                  <div class="audit-input-row">
+                    <input
+                      id="auditUrlInput"
+                      class="audit-input"
+                      type="url"
+                      placeholder="https://tuweb.com"
+                      autocomplete="url"
+                    />
+                    <button
+                      id="auditSubmitBtn"
+                      class="btn-purple"
+                      type="button"
+                    >
+                      Auditar
+                    </button>
+                  </div>
+                  <p class="audit-hint">
+                    Solo URLs publicas. Ej: https://miempresa.com
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="audit-results-card is-hidden"
+              id="auditResults"
+              aria-live="polite"
+            >
+              <div class="results-header">
+                <div>
+                  <p class="results-eyebrow">Resultados</p>
+                  <h2 id="auditStatus">Listo para auditar</h2>
+                </div>
+                <div class="score-pill">
+                  <span class="score-label">Score</span>
+                  <span id="auditScore">--</span>
+                </div>
+              </div>
+
+              <div class="results-islands">
+                <div class="results-island">
+                  <h3>Errores</h3>
+                  <ul id="auditErrors" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island">
+                  <h3>Warnings</h3>
+                  <ul id="auditWarnings" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island">
+                  <h3>Buenas practicas</h3>
+                  <ul id="auditGood" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island">
+                  <h3>Keywords sugeridas</h3>
+                  <ul id="auditKeywords" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island results-island-wide">
+                  <h3>Contenido generado</h3>
+                  <p id="auditContent" class="results-copy">Sin datos aun</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="panel-history">
+          <div class="panel-empty">
+            <h2>Historial</h2>
+            <p>Esta seccion se implementara en el siguiente feature.</p>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="panel-content">
+          <div class="panel-empty">
+            <h2>Contenido</h2>
+            <p>Genera contenido SEO desde aqui en la proxima iteracion.</p>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="panel-settings">
+          <div class="panel-empty">
+            <h2>Ajustes</h2>
+            <p>Configura tus preferencias pronto.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/services/pySeoService.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>
