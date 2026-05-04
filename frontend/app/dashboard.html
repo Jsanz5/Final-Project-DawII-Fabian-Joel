@@ -9,6 +9,13 @@
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css"
+      integrity="sha512-kJlvECunwXftkPwyvHbclArO8wszgBGisiLeuDFwNM8ws+wKIw0sv1os3ClWZOcrEB2eRXULYUsm8OVRGJKwGA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body class="dashboard-page">
@@ -25,18 +32,18 @@
             </div>
           </a>
         </div>
-        <nav class="sidebar-nav" aria-label="Secciones">
-          <button class="sidebar-item active" data-panel="audit" type="button">
-            Audit
+        <nav class="sidebar-nav">
+          <button class="sidebar-item active" data-panel="audit">
+            <i class="ri-search-eye-line"></i> <span>Audit</span>
           </button>
-          <button class="sidebar-item" data-panel="history" type="button">
-            Historial
+          <button class="sidebar-item" data-panel="history">
+            <i class="ri-history-line"></i> <span>Historial</span>
           </button>
-          <button class="sidebar-item" data-panel="content" type="button">
-            Contenido
+          <button class="sidebar-item" data-panel="content">
+            <i class="ri-edit-box-line"></i> <span>Contenido</span>
           </button>
-          <button class="sidebar-item" data-panel="settings" type="button">
-            Ajustes
+          <button class="sidebar-item" data-panel="settings">
+            <i class="ri-settings-3-line"></i> <span>Ajustes</span>
           </button>
         </nav>
         <div class="sidebar-footer">
