@@ -529,17 +529,21 @@ nav a:hover::before {
 .widget-outer {
   position: relative;
   width: 100%;
-  max-width: 720px;
+  height: auto;
+  margin-bottom: 96px;
+  max-width: 1140px; /* Mismo ancho que el nav/header */
   animation: slideUp 0.8s 0.35s ease both;
   z-index: 2;
-  padding: 3px;
+  padding: 16px; /* Grosor del borde */
   border-radius: var(--border-radius-cards);
+  /* Borde desvanecido usando gradiente hacia transparente */
   background: linear-gradient(
-    135deg,
-    var(--color-silver-detail) 0%,
-    var(--color-sky-blue-highlight) 50%,
-    var(--color-amethyst-accent) 100%
+    160deg,
+    var(--color-amethyst-accent) 0%,
+    var(--color-sky-blue-highlight) 40%,
+    rgba(214, 214, 214, 0) 80%
   );
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
 }
 @keyframes slideUp {
   from {
@@ -554,11 +558,9 @@ nav a:hover::before {
 
 .widget-card {
   background: var(--color-porcelain-surface);
-  border-radius: calc(
-    var(--border-radius-cards) - 3px
-  ); /* Slightly smaller to fit inside outer padding */
+  border-radius: calc(var(--border-radius-cards) - 2px);
   overflow: hidden;
-  padding: 28px 28px 0;
+  padding: 40px 48px 32px;
 }
 
 /* title */
@@ -672,8 +674,8 @@ nav a:hover::before {
 /* body */
 .wg-body {
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 20px;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
   align-items: start;
 }
 
@@ -682,20 +684,21 @@ nav a:hover::before {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 12px;
 }
 .gauge-wrap {
   position: relative;
-  width: 180px;
-  height: 100px;
-  margin-bottom: 14px;
+  width: 220px;
+  height: 130px;
+  margin-bottom: 4px;
 }
 .gauge-svg {
-  width: 180px;
-  height: 100px;
+  width: 220px;
+  height: 130px;
 }
 .gauge-score {
   position: absolute;
-  bottom: 12px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -703,7 +706,7 @@ nav a:hover::before {
 }
 .gauge-num {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 800;
   color: rgba(20, 65, 213, 0.9);
   line-height: 1;
@@ -722,32 +725,32 @@ nav a:hover::before {
 
 .gauge-label {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: #111827;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 .gauge-desc {
   background: #dcfce7;
   color: #15803d;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 8px 14px;
+  padding: 10px 16px;
   border-radius: 8px;
   text-align: center;
   line-height: 1.4;
-  max-width: 180px;
-  margin-bottom: 20px;
+  max-width: 220px;
+  margin-bottom: 12px;
 }
 
 /* chart */
 .wg-chart-col {
-  padding-top: 4px;
+  padding-top: 8px;
 }
 .wg-chart-legend {
   display: flex;
   gap: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 .wg-legend-item {
@@ -766,9 +769,16 @@ nav a:hover::before {
 }
 .wg-chart-svg-wrap {
   background: #f8faff;
-  border-radius: 10px;
-  padding: 10px 10px 0;
+  border-radius: 12px;
+  padding: 16px 18px 10px;
   overflow: hidden;
+  min-height: 180px;
+}
+
+#chartSvg {
+  width: 100%;
+  height: 160px;
+  display: block;
 }
 
 /* Chart axis labels */
@@ -795,7 +805,7 @@ nav a:hover::before {
   justify-content: space-between;
   font-size: 0.65rem;
   color: var(--muted2);
-  padding: 6px 10px 8px;
+  padding: 8px 10px 12px;
   margin-top: -2px;
 }
 

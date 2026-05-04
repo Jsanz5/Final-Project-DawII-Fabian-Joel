@@ -1,5 +1,5 @@
 // toasts para las notificaciones
-window.showToast = function(type, message) {
+window.showToast = function (type, message) {
   // Crear contenedor de toasts si no existe
   let toastContainer = document.getElementById("toastContainer");
   if (!toastContainer) {
@@ -21,7 +21,7 @@ window.showToast = function(type, message) {
     success: { bg: "rgba(76, 175, 80, 0.9)", border: "#4caf50" },
     error: { bg: "rgba(244, 67, 54, 0.9)", border: "#f44336" },
     info: { bg: "rgba(33, 150, 243, 0.9)", border: "#2196f3" },
-    warning: { bg: "rgba(255, 193, 7, 0.9)", border: "#ffc107" }
+    warning: { bg: "rgba(255, 193, 7, 0.9)", border: "#ffc107" },
   };
   const color = colors[type] || colors.info;
 
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("userProfileBtn");
       menu.classList.toggle("active");
       btn.classList.toggle("active");
-      
+
       // Cierra el menu al hacer click en cualquier parte del documento
       if (menu.classList.contains("active")) {
         // Usamos setTimeout para evitar que el mismo clic que abre el menú lo cierre inmediatamente
@@ -202,28 +202,28 @@ document.addEventListener("DOMContentLoaded", () => {
         score: 88,
         label: "Great",
         desc: "Frequently mentioned and often<br>preferred by LLMs",
-        badge: "🌐 All Platforms",
+        badge: "All Platforms",
         arrowDeg: -8,
       },
       ChatGPT: {
         score: 90,
         label: "Great",
         desc: "Frequently mentioned and often<br>preferred by LLMs",
-        badge: "🤖 ChatGPT",
+        badge: "ChatGPT",
         arrowDeg: -5,
       },
       Gemini: {
         score: 67,
         label: "Average",
         desc: "Growing visibility in<br>Gemini responses",
-        badge: "💎 Gemini",
+        badge: "Gemini",
         arrowDeg: -55,
       },
       "AI Overview": {
         score: 74,
         label: "Good",
         desc: "Often cited in Google's<br>AI-generated answers",
-        badge: "🔍 AI Overview",
+        badge: "AI Overview",
         arrowDeg: -38,
       },
       "AI Mode": {
@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // El usuario está logueado, iniciar la auditoría SEO
         const userSession = JSON.parse(isLogged);
         const url = inp.value.trim();
-        
+
         // Llamar al endpoint de auditoría (tu compañero completará la lógica Python)
         initiateAudit(url, userSession.id);
       } else {
@@ -373,21 +373,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Función auxiliar para iniciar la auditoría
   window.initiateAudit = function (url, userId) {
-
-    const API_BASE_URL = '../../backend/api';
+    const API_BASE_URL = "../../backend/api";
 
     fetch(`${API_BASE_URL}/seo/audit.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ 
-        user_id: userId, 
-        url: url 
+      body: JSON.stringify({
+        user_id: userId,
+        url: url,
       }),
     })
-      .then(response => response.json())
-      .then(result => {
+      .then((response) => response.json())
+      .then((result) => {
         if (result.status === "success") {
           showToast("success", `Auditoría iniciada para: ${url}`);
           // Redirigir a página de resultados
@@ -398,7 +397,7 @@ document.addEventListener("DOMContentLoaded", () => {
           showToast("error", `Error: ${result.message}`);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         // DEBUG: Error al iniciar auditoría - ver consola para detalles
         console.error("[DEBUG] Error al iniciar auditoría:", error);
         alert("Error al iniciar la auditoría");
