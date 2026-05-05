@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - EchoSEO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css"
+      integrity="sha512-kJlvECunwXftkPwyvHbclArO8wszgBGisiLeuDFwNM8ws+wKIw0sv1os3ClWZOcrEB2eRXULYUsm8OVRGJKwGA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="dashboard-page">
+    <div class="dashboard-shell">
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <a href="#" class="logo">
+            <div class="logo-mark">
+              <img
+                src="./assets/img/EchoSEO-Logo.png"
+                alt="EchoSEO"
+                class="header-logo-img"
+              />
+            </div>
+          </a>
+        </div>
+        <nav class="sidebar-nav">
+          <button class="sidebar-item active" data-panel="audit">
+            <i class="ri-search-eye-line"></i> <span>Audit</span>
+          </button>
+          <button class="sidebar-item" data-panel="history">
+            <i class="ri-history-line"></i> <span>Historial</span>
+          </button>
+          <button class="sidebar-item" data-panel="content">
+            <i class="ri-edit-box-line"></i> <span>Generador IA</span>
+          </button>
+          <button class="sidebar-item" data-panel="analyze">
+            <i class="ri-bar-chart-2-line"></i> <span>Competencia</span>
+          </button>
+        </nav>
+        <div class="sidebar-footer">
+          <p class="sidebar-caption">Tu panel SEO</p>
+        </div>
+      </aside>
+
+      <main class="dashboard-main">
+        <section class="dashboard-panel active" id="panel-audit">
+          <div class="panel-header">
+            <div>
+              <p class="panel-eyebrow">Dashboard</p>
+              <h1>Audit en tiempo real</h1>
+            </div>
+            <p class="panel-subtitle">
+              Analiza tu sitio con una auditoria SEO instantanea y detecta
+              mejoras criticas.
+            </p>
+          </div>
+
+          <div class="audit-layout">
+            <div class="audit-canvas-card">
+              <div class="canvas-frame" id="canvasFrame">
+                <canvas
+                  id="auditWarpCanvas"
+                  aria-label="Vista interactiva"
+                ></canvas>
+                <div class="audit-loading" id="auditLoading" aria-hidden="true">
+                  <div class="loading-ring"></div>
+                  <p>Analizando sitio...</p>
+                </div>
+                <div class="canvas-overlay">
+                  <h2 class="audit-title">Audita en tiempo real</h2>
+                  <label class="audit-label" for="auditUrlInput"
+                    >URL a analizar</label
+                  >
+                  <div class="audit-input-row">
+                    <input
+                      id="auditUrlInput"
+                      class="audit-input"
+                      type="url"
+                      placeholder="https://tuweb.com"
+                      autocomplete="url"
+                    />
+                    <button
+                      id="auditSubmitBtn"
+                      class="btn-purple"
+                      type="button"
+                    >
+                      Auditar
+                    </button>
+                  </div>
+                  <p class="audit-hint">
+                    Solo URLs publicas. Ej: https://miempresa.com
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="audit-results-card is-hidden"
+              id="auditResults"
+              aria-live="polite"
+            >
+              <div class="results-header">
+                <div>
+                  <p class="results-eyebrow">Resultados</p>
+                  <h2 id="auditStatus">Listo para auditar</h2>
+                </div>
+                <div class="score-pill">
+                  <span class="score-label">Score</span>
+                  <span id="auditScore">--</span>
+                </div>
+              </div>
+
+              <div class="results-islands">
+                <div class="results-island">
+                  <h3>Errores</h3>
+                  <ul id="auditErrors" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island">
+                  <h3>Warnings</h3>
+                  <ul id="auditWarnings" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island">
+                  <h3>Buenas practicas</h3>
+                  <ul id="auditGood" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island">
+                  <h3>Keywords sugeridas</h3>
+                  <ul id="auditKeywords" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island results-island-wide">
+                  <h3>Contenido generado</h3>
+                  <p id="auditContent" class="results-copy">Sin datos aun</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="panel-history">
+          <div class="panel-header">
+            <div>
+              <p class="panel-eyebrow">Auditorías Pasadas</p>
+              <h1>Historial de Auditorías</h1>
+            </div>
+            <p class="panel-subtitle">
+              Revisa y accede a tus últimos análisis SEO.
+            </p>
+          </div>
+          <div class="history-list" id="historyList">
+            <div
+              class="audit-loading is-hidden"
+              id="historyLoading"
+              aria-hidden="true"
+            >
+              <div class="loading-ring"></div>
+              <p>Cargando historial...</p>
+            </div>
+            <div id="historyContainer" class="history-container"></div>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="panel-content">
+          <div class="panel-header">
+            <div>
+              <p class="panel-eyebrow">Motor de Inteligencia Artificial</p>
+              <h1>Generación de Contenido AI</h1>
+            </div>
+            <p class="panel-subtitle">
+              Crea artículos y fichas de producto optimizadas para posicionar
+              alto.
+            </p>
+          </div>
+          <div class="content-layout">
+            <div class="audit-canvas-card">
+              <form id="contentForm" class="content-form">
+                <label class="audit-label" for="contentTopic"
+                  >Tema o Descripción</label
+                >
+                <input
+                  type="text"
+                  id="contentTopic"
+                  class="audit-input"
+                  placeholder="ej. Zapatos ecológicos"
+                  required
+                />
+
+                <label class="audit-label" for="contentType"
+                  >Tipo de Contenido</label
+                >
+                <select id="contentType" class="audit-input" required>
+                  <option value="articulo">Artículo de Blog</option>
+                  <option value="ficha de producto">Ficha de Producto</option>
+                </select>
+
+                <label class="audit-label" for="contentLocation"
+                  >Ubicación (Opcional Local SEO)</label
+                >
+                <input
+                  type="text"
+                  id="contentLocation"
+                  class="audit-input"
+                  placeholder="ej. Madrid, España"
+                />
+
+                <button type="submit" class="btn-purple" id="contentSubmitBtn">
+                  Generar Contenido
+                </button>
+              </form>
+              <div
+                class="audit-loading is-hidden"
+                id="contentLoading"
+                aria-hidden="true"
+              >
+                <div class="loading-ring"></div>
+                <p>Generando AI Content... (puede tardar)</p>
+              </div>
+            </div>
+
+            <!-- Resultados Generados escondidos por defecto -->
+            <div class="audit-results-card is-hidden" id="contentResults">
+              <div class="results-header">
+                <h2>Resultados Generados</h2>
+              </div>
+              <div class="content-result-blocks">
+                <div class="result-block">
+                  <span class="block-label">Meta Título</span>
+                  <h3 id="resMetaTitle"></h3>
+                </div>
+                <div class="result-block">
+                  <span class="block-label">Meta Descripción</span>
+                  <p id="resMetaDesc"></p>
+                </div>
+                <div class="result-block">
+                  <span class="block-label">H1 Recomendado</span>
+                  <h4 id="resH1"></h4>
+                </div>
+                <div class="result-block">
+                  <span class="block-label">Cuerpo de Contenido</span>
+                  <div class="body-content-box" id="resBody"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="panel-analyze">
+          <div class="panel-header">
+            <div>
+              <p class="panel-eyebrow">Insights de Mercado</p>
+              <h1>Análisis de Competencia</h1>
+            </div>
+            <p class="panel-subtitle">
+              Descubre a tus competidores y obtén estrategias SEO para
+              superarlos.
+            </p>
+          </div>
+          <div class="content-layout">
+            <div class="audit-canvas-card">
+              <form id="analyzeForm" class="content-form">
+                <label class="audit-label" for="analyzeKeyword"
+                  >Palabra Clave</label
+                >
+                <input
+                  type="text"
+                  id="analyzeKeyword"
+                  class="audit-input"
+                  placeholder="ej. comprar zapatillas running"
+                  required
+                />
+
+                <label class="audit-label" for="analyzeLocation"
+                  >Ubicación</label
+                >
+                <input
+                  type="text"
+                  id="analyzeLocation"
+                  class="audit-input"
+                  value="Spain"
+                  placeholder="ej. Spain"
+                />
+
+                <button type="submit" class="btn-purple" id="analyzeSubmitBtn">
+                  Analizar Competencia
+                </button>
+              </form>
+              <div
+                class="audit-loading is-hidden"
+                id="analyzeLoading"
+                aria-hidden="true"
+              >
+                <div class="loading-ring"></div>
+                <p>Analizando SERPs... (puede tardar)</p>
+              </div>
+            </div>
+
+            <div class="audit-results-card is-hidden" id="analyzeResults">
+              <div class="results-header">
+                <h2>Resultados del Análisis</h2>
+              </div>
+              <div class="results-islands">
+                <div class="results-island results-island-wide">
+                  <h3>Estrategia SEO</h3>
+                  <div class="content-result-blocks">
+                    <div class="result-block">
+                      <span class="block-label">Intención de Búsqueda</span>
+                      <p id="resSearchIntent"></p>
+                    </div>
+                    <div class="result-block">
+                      <span class="block-label">H1 Sugerido</span>
+                      <p id="resAnalyzeH1"></p>
+                    </div>
+                    <div class="result-block">
+                      <span class="block-label">Oportunidad / Content Gap</span>
+                      <p id="resContentGap"></p>
+                    </div>
+                    <div class="result-block">
+                      <span class="block-label">Estructura H2 Sugerida</span>
+                      <ul id="resAnalyzeH2" class="results-list"></ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="results-island results-island-wide">
+                  <h3>Top Competidores</h3>
+                  <div id="resCompetitorsList" class="competitors-grid"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/services/pySeoService.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>
