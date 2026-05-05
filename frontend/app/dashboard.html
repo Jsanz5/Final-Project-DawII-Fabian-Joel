@@ -113,40 +113,59 @@
                   <p class="results-eyebrow">Resultados</p>
                   <h2 id="auditStatus">Listo para auditar</h2>
                 </div>
-                <div class="score-pill">
-                  <span class="score-label">Score</span>
-                  <span id="auditScore">--</span>
-                </div>
               </div>
 
-              <div class="results-islands">
-                <div class="results-island">
-                  <h3>Errores</h3>
+              <div class="results-grid">
+                <div class="results-island island-score">
+                  <h3 class="island-title">
+                    <i class="ri-trophy-line"></i> GLOBAL SCORE
+                  </h3>
+                  <div class="score-circular">
+                    <span id="auditScore">--</span>
+                  </div>
+                  <p class="score-text" id="auditScoreText">
+                    ¡Listo para empezar!
+                  </p>
+                </div>
+                <div class="results-island island-errors">
+                  <h3 class="island-title">
+                    <i class="ri-error-warning-line"></i> ERRORES
+                  </h3>
                   <ul id="auditErrors" class="results-list">
                     <li>Sin datos aun</li>
                   </ul>
                 </div>
-                <div class="results-island">
-                  <h3>Warnings</h3>
+                <div class="results-island island-warnings">
+                  <h3 class="island-title">
+                    <i class="ri-alert-line"></i> ADVERTENCIAS
+                  </h3>
                   <ul id="auditWarnings" class="results-list">
                     <li>Sin datos aun</li>
                   </ul>
                 </div>
-                <div class="results-island">
-                  <h3>Buenas practicas</h3>
+                <div class="results-island island-good">
+                  <h3 class="island-title">
+                    <i class="ri-checkbox-circle-line"></i> BUENAS PRÁCTICAS
+                  </h3>
                   <ul id="auditGood" class="results-list">
                     <li>Sin datos aun</li>
                   </ul>
                 </div>
-                <div class="results-island">
-                  <h3>Keywords sugeridas</h3>
-                  <ul id="auditKeywords" class="results-list">
+                <div class="results-island island-keywords">
+                  <h3 class="island-title">
+                    <i class="ri-key-2-line"></i> KEYWORDS SUGERIDAS
+                  </h3>
+                  <ul id="auditKeywords" class="keyword-pills">
                     <li>Sin datos aun</li>
                   </ul>
                 </div>
-                <div class="results-island results-island-wide">
-                  <h3>Contenido generado</h3>
-                  <p id="auditContent" class="results-copy">Sin datos aun</p>
+                <div class="results-island island-content">
+                  <h3 class="island-title">
+                    <i class="ri-magic-line"></i> SUGERENCIA DE CONTENIDO (IA)
+                  </h3>
+                  <div class="ai-content-box" id="auditContent">
+                    Sin datos aun
+                  </div>
                 </div>
               </div>
             </div>
