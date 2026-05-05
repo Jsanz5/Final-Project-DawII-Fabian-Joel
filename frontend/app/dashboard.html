@@ -40,10 +40,10 @@
             <i class="ri-history-line"></i> <span>Historial</span>
           </button>
           <button class="sidebar-item" data-panel="content">
-            <i class="ri-edit-box-line"></i> <span>Contenido</span>
+            <i class="ri-edit-box-line"></i> <span>Generador IA</span>
           </button>
-          <button class="sidebar-item" data-panel="settings">
-            <i class="ri-settings-3-line"></i> <span>Ajustes</span>
+          <button class="sidebar-item" data-panel="analyze">
+            <i class="ri-bar-chart-2-line"></i> <span>Competencia</span>
           </button>
         </nav>
         <div class="sidebar-footer">
@@ -154,23 +154,195 @@
         </section>
 
         <section class="dashboard-panel" id="panel-history">
-          <div class="panel-empty">
-            <h2>Historial</h2>
-            <p>Esta seccion se implementara en el siguiente feature.</p>
+          <div class="panel-header">
+            <div>
+              <p class="panel-eyebrow">Auditorías Pasadas</p>
+              <h1>Historial de Auditorías</h1>
+            </div>
+            <p class="panel-subtitle">
+              Revisa y accede a tus últimos análisis SEO.
+            </p>
+          </div>
+          <div class="history-list" id="historyList">
+            <div
+              class="audit-loading is-hidden"
+              id="historyLoading"
+              aria-hidden="true"
+            >
+              <div class="loading-ring"></div>
+              <p>Cargando historial...</p>
+            </div>
+            <div id="historyContainer" class="history-container"></div>
           </div>
         </section>
 
         <section class="dashboard-panel" id="panel-content">
-          <div class="panel-empty">
-            <h2>Contenido</h2>
-            <p>Genera contenido SEO desde aqui en la proxima iteracion.</p>
+          <div class="panel-header">
+            <div>
+              <p class="panel-eyebrow">Motor de Inteligencia Artificial</p>
+              <h1>Generación de Contenido AI</h1>
+            </div>
+            <p class="panel-subtitle">
+              Crea artículos y fichas de producto optimizadas para posicionar
+              alto.
+            </p>
+          </div>
+          <div class="content-layout">
+            <div class="audit-canvas-card">
+              <form id="contentForm" class="content-form">
+                <label class="audit-label" for="contentTopic"
+                  >Tema o Descripción</label
+                >
+                <input
+                  type="text"
+                  id="contentTopic"
+                  class="audit-input"
+                  placeholder="ej. Zapatos ecológicos"
+                  required
+                />
+
+                <label class="audit-label" for="contentType"
+                  >Tipo de Contenido</label
+                >
+                <select id="contentType" class="audit-input" required>
+                  <option value="articulo">Artículo de Blog</option>
+                  <option value="ficha de producto">Ficha de Producto</option>
+                </select>
+
+                <label class="audit-label" for="contentLocation"
+                  >Ubicación (Opcional Local SEO)</label
+                >
+                <input
+                  type="text"
+                  id="contentLocation"
+                  class="audit-input"
+                  placeholder="ej. Madrid, España"
+                />
+
+                <button type="submit" class="btn-purple" id="contentSubmitBtn">
+                  Generar Contenido
+                </button>
+              </form>
+              <div
+                class="audit-loading is-hidden"
+                id="contentLoading"
+                aria-hidden="true"
+              >
+                <div class="loading-ring"></div>
+                <p>Generando AI Content... (puede tardar)</p>
+              </div>
+            </div>
+
+            <!-- Resultados Generados escondidos por defecto -->
+            <div class="audit-results-card is-hidden" id="contentResults">
+              <div class="results-header">
+                <h2>Resultados Generados</h2>
+              </div>
+              <div class="content-result-blocks">
+                <div class="result-block">
+                  <span class="block-label">Meta Título</span>
+                  <h3 id="resMetaTitle"></h3>
+                </div>
+                <div class="result-block">
+                  <span class="block-label">Meta Descripción</span>
+                  <p id="resMetaDesc"></p>
+                </div>
+                <div class="result-block">
+                  <span class="block-label">H1 Recomendado</span>
+                  <h4 id="resH1"></h4>
+                </div>
+                <div class="result-block">
+                  <span class="block-label">Cuerpo de Contenido</span>
+                  <div class="body-content-box" id="resBody"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section class="dashboard-panel" id="panel-settings">
-          <div class="panel-empty">
-            <h2>Ajustes</h2>
-            <p>Configura tus preferencias pronto.</p>
+        <section class="dashboard-panel" id="panel-analyze">
+          <div class="panel-header">
+            <div>
+              <p class="panel-eyebrow">Insights de Mercado</p>
+              <h1>Análisis de Competencia</h1>
+            </div>
+            <p class="panel-subtitle">
+              Descubre a tus competidores y obtén estrategias SEO para
+              superarlos.
+            </p>
+          </div>
+          <div class="content-layout">
+            <div class="audit-canvas-card">
+              <form id="analyzeForm" class="content-form">
+                <label class="audit-label" for="analyzeKeyword"
+                  >Palabra Clave</label
+                >
+                <input
+                  type="text"
+                  id="analyzeKeyword"
+                  class="audit-input"
+                  placeholder="ej. comprar zapatillas running"
+                  required
+                />
+
+                <label class="audit-label" for="analyzeLocation"
+                  >Ubicación</label
+                >
+                <input
+                  type="text"
+                  id="analyzeLocation"
+                  class="audit-input"
+                  value="Spain"
+                  placeholder="ej. Spain"
+                />
+
+                <button type="submit" class="btn-purple" id="analyzeSubmitBtn">
+                  Analizar Competencia
+                </button>
+              </form>
+              <div
+                class="audit-loading is-hidden"
+                id="analyzeLoading"
+                aria-hidden="true"
+              >
+                <div class="loading-ring"></div>
+                <p>Analizando SERPs... (puede tardar)</p>
+              </div>
+            </div>
+
+            <div class="audit-results-card is-hidden" id="analyzeResults">
+              <div class="results-header">
+                <h2>Resultados del Análisis</h2>
+              </div>
+              <div class="results-islands">
+                <div class="results-island results-island-wide">
+                  <h3>Estrategia SEO</h3>
+                  <div class="content-result-blocks">
+                    <div class="result-block">
+                      <span class="block-label">Intención de Búsqueda</span>
+                      <p id="resSearchIntent"></p>
+                    </div>
+                    <div class="result-block">
+                      <span class="block-label">H1 Sugerido</span>
+                      <p id="resAnalyzeH1"></p>
+                    </div>
+                    <div class="result-block">
+                      <span class="block-label">Oportunidad / Content Gap</span>
+                      <p id="resContentGap"></p>
+                    </div>
+                    <div class="result-block">
+                      <span class="block-label">Estructura H2 Sugerida</span>
+                      <ul id="resAnalyzeH2" class="results-list"></ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="results-island results-island-wide">
+                  <h3>Top Competidores</h3>
+                  <div id="resCompetitorsList" class="competitors-grid"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>

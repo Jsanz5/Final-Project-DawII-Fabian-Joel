@@ -1,4 +1,4 @@
-const PANEL_IDS = ["audit", "history", "content", "settings"];
+const PANEL_IDS = ["audit", "history", "content", "analyze"];
 
 function setActivePanel(panelId) {
   PANEL_IDS.forEach((id) => {
@@ -295,10 +295,137 @@ function initWarpCanvas() {
   draw();
 }
 
+function bindContentForm() {
+  const form = document.getElementById("contentForm");
+  const submitBtn = document.getElementById("contentSubmitBtn");
+  const loading = document.getElementById("contentLoading");
+  const results = document.getElementById("contentResults");
+
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const topic = document.getElementById("contentTopic").value;
+    const type = document.getElementById("contentType").value;
+    const locationField = document.getElementById("contentLocation").value;
+
+    submitBtn.disabled = true;
+    submitBtn.classList.add("is-loading");
+    loading.classList.remove("is-hidden");
+    loading.setAttribute("aria-hidden", "false");
+    results.classList.add("is-hidden");
+
+    try {
+      const data = await window.pySeoService.generateContent(
+        topic,
+        type,
+        locationField,
+      );
+
+      const p = data.generated_content || {};
+      document.getElementById("resMetaTitle").innerText = p.meta_title || "N/A";
+      document.getElementById("resMetaDesc").innerText =
+        p.meta_description || "N/A";
+      document.getElementById("resH1").innerText = p.h1 || "N/A";
+      document.getElementById("resBody").innerText = p.body || "N/A";
+
+      results.classList.remove("is-hidden");
+      showToast("success", "Contenido generado con éxito");
+    } catch (err) {
+      showToast("error", err.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("is-loading");
+      loading.classList.add("is-hidden");
+      loading.setAttribute("aria-hidden", "true");
+    }
+  });
+}
+
+function bindAnalyzeForm() {
+  const form = document.getElementById("analyzeForm");
+  const submitBtn = document.getElementById("analyzeSubmitBtn");
+  const loading = document.getElementById("analyzeLoading");
+  const results = document.getElementById("analyzeResults");
+
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const keyword = document.getElementById("analyzeKeyword").value;
+    const locationField = document.getElementById("analyzeLocation").value;
+
+    submitBtn.disabled = true;
+    submitBtn.classList.add("is-loading");
+    loading.classList.remove("is-hidden");
+    loading.setAttribute("aria-hidden", "false");
+    results.classList.add("is-hidden");
+
+    try {
+      const data = await window.pySeoService.analyzeSeo(keyword, locationField);
+
+      const analy = data.seo_analysis || {};
+      document.getElementById("resSearchIntent").innerText =
+        analy.search_intent || "N/A";
+      document.getElementById("resAnalyzeH1").innerText =
+        analy.h1_sugerido || "N/A";
+      document.getElementById("resContentGap").innerText =
+        analy.content_gap || "N/A";
+
+      const h2List = analy.h2_lista || [];
+      const h2Ul = document.getElementById("resAnalyzeH2");
+      h2Ul.innerHTML = "";
+      if (h2List.length) {
+        h2List.forEach((h) => {
+          const li = document.createElement("li");
+          li.innerText = h;
+          h2Ul.appendChild(li);
+        });
+      } else {
+        h2Ul.innerHTML = "<li>No data</li>";
+      }
+
+      const comps = data.competitors || [];
+      const listDiv = document.getElementById("resCompetitorsList");
+      listDiv.innerHTML = comps
+        .map((c) => {
+          return `
+          <div class="competitor-card">
+            <div>
+              <span class="competitor-rank">#${c.ranking || "?"}</span>
+              <h4 class="competitor-title">${c.title || "Sin Título"}</h4>
+            </div>
+            <a href="${c.url}" class="competitor-url" target="_blank">${c.url || "#"}</a>
+            <p class="competitor-snippet">${c.snippet || ""}</p>
+          </div>
+        `;
+        })
+        .join("");
+
+      results.classList.remove("is-hidden");
+      showToast("success", "Análisis de competencia listo");
+    } catch (err) {
+      showToast("error", err.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("is-loading");
+      loading.classList.add("is-hidden");
+      loading.setAttribute("aria-hidden", "true");
+    }
+  });
+}
+
+function loadHistory() {
+  console.log("History panel defer");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   enforceSession();
   bindSidebar();
   bindAuditForm();
   initWarpCanvas();
   updateResultsEmpty();
+  bindContentForm();
+  bindAnalyzeForm();
+  loadHistory();
 });

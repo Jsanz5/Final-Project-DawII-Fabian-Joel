@@ -2401,3 +2401,121 @@ dashboard-main {
     grid-column: span 1;
   }
 }
+
+/* Formularios generativos */
+.content-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.content-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.content-result-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.result-block {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.result-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.block-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-amethyst-accent);
+  margin-bottom: 0.5rem;
+}
+
+.body-content-box {
+  font-family: var(--font-inter);
+  line-height: 1.7;
+  color: var(--color-ink-text);
+  white-space: pre-wrap;
+  background: var(--color-porcelain-surface);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  border: 1px dashed rgba(100, 100, 200, 0.2);
+}
+
+.competitors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.competitor-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.competitor-rank {
+  display: inline-block;
+  background: var(--color-amethyst-accent);
+  color: white;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  line-height: 24px;
+  margin-bottom: 0.5rem;
+}
+
+.competitor-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-ink-text);
+}
+
+.competitor-url {
+  font-size: 0.8rem;
+  color: var(--color-amethyst-accent);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.competitor-url:hover {
+  text-decoration: underline;
+}
+
+.competitor-snippet {
+  font-size: 0.85rem;
+  color: var(--color-graphite-text);
+  line-height: 1.4;
+  margin-top: 0.5rem;
+}
