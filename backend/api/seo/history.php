@@ -6,13 +6,41 @@ if (in_array($origin, $allowedOrigins)) {
     header("Access-Control-Allow-Origin: " . $origin);
 }
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once '../../dao/AuditDao.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents("php://input"), true) ?: $_POST;
+    
+    $userId = $data['user_id'] ?? null;
+    $url = $data['url'] ?? null;
+    $seoScore = $data['seo_score'] ?? null;
+    $reportData = $data['report_data'] ?? null;
+
+    if (empty($userId) || empty($url)) {
+        http_response_code(400);
+        echo json_encode(["status" => "error", "message" => "user_id y url son requeridos"]);
+        exit;
+    }
+
+    try {
+        $auditDao = new AuditDao();
+        
+        $auditDao->saveCompletedAudit($userId, $url, $seoScore, $reportData);
+        
+        http_response_code(201);
+        echo json_encode(["status" => "success", "message" => "Auditoría guardada"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["status" => "error", "message" => "Error al guardar historial: " . $e->getMessage()]);
+    }
     exit;
 }
 
@@ -67,10 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'id' => (int)$audit['id'],
                 'url' => $audit['url'],
                 'seo_score' => $audit['seo_score'] !== null ? (int)$audit['seo_score'] : null,
-                'status' => $audit['status'],
+                'status' => $audit['seo_score'] !== null ? 'completed' : 'pending',
                 'report_data' => $reportData,
                 'created_at' => $audit['created_at'],
-                'has_results' => $audit['status'] === 'completed' && $audit['seo_score'] !== null
+                'has_results' => $audit['seo_score'] !== null
             ];
         }
 

@@ -190,7 +190,7 @@
 
 .loading-ring {
   width: 45px;
-  height: 40px;
+  height: 200px;
   background:
     linear-gradient(
       #0000 calc(1 * 100% / 6),

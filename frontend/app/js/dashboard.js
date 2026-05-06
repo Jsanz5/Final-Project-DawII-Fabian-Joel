@@ -131,6 +131,19 @@ function bindAuditForm() {
 
     try {
       const result = await window.pySeoService.auditSeoUrl(normalized);
+      const seoScore = result?.seo_analysis?.global_score ?? null;
+
+      const sessionStr = localStorage.getItem("user_session");
+      if (sessionStr) {
+        const session = JSON.parse(sessionStr);
+
+        await window.pySeoService.saveAuditResult(
+          session.id,
+          normalized,
+          result,
+        );
+      }
+
       renderAuditResults(result);
       showToast("success", "Auditoria completada");
     } catch (error) {
