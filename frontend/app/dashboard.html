@@ -33,6 +33,16 @@
             </div>
           </a>
         </div>
+        <div class="sidebar-toggle-rail">
+          <button
+            class="sidebar-toggle"
+            id="sidebarToggle"
+            type="button"
+            aria-label="Contraer barra lateral"
+          >
+            <i class="ri-arrow-left-double-line" aria-hidden="true"></i>
+          </button>
+        </div>
         <nav class="sidebar-nav">
           <button class="sidebar-item active" data-panel="audit">
             <i class="ri-search-eye-line"></i> <span>Audit</span>
@@ -210,38 +220,90 @@
           <div class="content-layout">
             <div class="audit-canvas-card">
               <form id="contentForm" class="content-form">
-                <label class="audit-label" for="contentTopic"
-                  >Tema o Descripción</label
-                >
-                <input
-                  type="text"
-                  id="contentTopic"
-                  class="audit-input"
-                  placeholder="ej. Zapatos ecológicos"
-                  required
-                />
+                <div class="content-form-fields">
+                  <div class="content-card">
+                    <div class="content-card-label">
+                      <span class="content-card-title">Tema o Descripción</span>
+                      <span class="content-card-hint">Define el foco del texto</span>
+                    </div>
+                    <div class="content-card-field">
+                      <input
+                        type="text"
+                        id="contentTopic"
+                        class="audit-input"
+                        placeholder="ej. Zapatos ecológicos"
+                        required
+                      />
+                    </div>
+                  </div>
 
-                <label class="audit-label" for="contentType"
-                  >Tipo de Contenido</label
-                >
-                <select id="contentType" class="audit-input" required>
-                  <option value="articulo">Artículo de Blog</option>
-                  <option value="ficha de producto">Ficha de Producto</option>
-                </select>
+                  <div class="content-card">
+                    <div class="content-card-label">
+                      <span class="content-card-title">Tipo de Contenido</span>
+                      <span class="content-card-hint">Elige el formato ideal</span>
+                    </div>
+                    <div class="content-card-field">
+                      <div
+                        class="content-chip-group"
+                        id="contentTypeChips"
+                        role="group"
+                        aria-label="Tipo de contenido"
+                      >
+                        <button
+                          type="button"
+                          class="content-chip is-active"
+                          data-value="articulo"
+                          aria-pressed="true"
+                        >
+                          Artículo de Blog
+                        </button>
+                        <button
+                          type="button"
+                          class="content-chip"
+                          data-value="ficha de producto"
+                          aria-pressed="false"
+                        >
+                          Ficha de Producto
+                        </button>
+                      </div>
+                      <input type="hidden" id="contentType" value="articulo" />
+                    </div>
+                  </div>
 
-                <label class="audit-label" for="contentLocation"
-                  >Ubicación (Opcional Local SEO)</label
-                >
-                <input
-                  type="text"
-                  id="contentLocation"
-                  class="audit-input"
-                  placeholder="ej. Madrid, España"
-                />
+                  <div class="content-card">
+                    <div class="content-card-label">
+                      <span class="content-card-title">Ubicación</span>
+                      <span class="content-card-hint">Opcional para Local SEO</span>
+                    </div>
+                    <div class="content-card-field">
+                      <input
+                        type="text"
+                        id="contentLocation"
+                        class="audit-input"
+                        placeholder="ej. Madrid, España"
+                      />
+                    </div>
+                  </div>
+                </div>
 
-                <button type="submit" class="btn-purple" id="contentSubmitBtn">
-                  Generar Contenido
-                </button>
+                <div class="content-form-action">
+                  <button
+                    type="submit"
+                    class="btn-purple"
+                    id="contentSubmitBtn"
+                  >
+                    Generar Contenido
+                  </button>
+                  <div class="content-action-status" id="contentActionStatus">
+                    <section class="loader" aria-hidden="true">
+                      <div class="slider" style="--i:0"></div>
+                      <div class="slider" style="--i:1"></div>
+                      <div class="slider" style="--i:2"></div>
+                      <div class="slider" style="--i:3"></div>
+                      <div class="slider" style="--i:4"></div>
+                    </section>
+                  </div>
+                </div>
               </form>
               <div
                 class="audit-loading is-hidden"
@@ -253,27 +315,90 @@
               </div>
             </div>
 
-            <!-- Resultados Generados escondidos por defecto -->
-            <div class="audit-results-card is-hidden" id="contentResults">
+            <!-- Resultados Generados -->
+            <div
+              class="audit-results-card content-results is-hidden"
+              id="contentResults"
+            >
               <div class="results-header">
-                <h2>Resultados Generados</h2>
+                <div>
+                  <p class="results-eyebrow">Generación Completada</p>
+                  <h2>Resultados Generados</h2>
+                </div>
+                <button class="btn-export" id="contentExportBtn" type="button">
+                  <i class="ri-download-line"></i> Exportar
+                </button>
               </div>
-              <div class="content-result-blocks">
-                <div class="result-block">
-                  <span class="block-label">Meta Título</span>
-                  <h3 id="resMetaTitle"></h3>
+              <div class="results-islands">
+                <div class="results-island meta-title">
+                  <div class="island-header">
+                    <h3 class="island-title">
+                      <i class="ri-file-text-line"></i> META TITULO
+                    </h3>
+                    <div class="island-actions">
+                      <span class="char-count" id="metaTitleCount">0 / 60</span>
+                      <button class="btn-copy" data-copy="resMetaTitle" title="Copiar" type="button">
+                        <i class="ri-file-copy-line"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <p class="results-copy" id="resMetaTitle"></p>
                 </div>
-                <div class="result-block">
-                  <span class="block-label">Meta Descripción</span>
-                  <p id="resMetaDesc"></p>
+                <div class="results-island meta-desc">
+                  <div class="island-header">
+                    <h3 class="island-title">
+                      <i class="ri-article-line"></i> META DESCRIPCION
+                    </h3>
+                    <div class="island-actions">
+                      <span class="char-count" id="metaDescCount">0 / 160</span>
+                      <button class="btn-copy" data-copy="resMetaDesc" title="Copiar" type="button">
+                        <i class="ri-file-copy-line"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <p class="results-copy" id="resMetaDesc"></p>
                 </div>
-                <div class="result-block">
-                  <span class="block-label">H1 Recomendado</span>
-                  <h4 id="resH1"></h4>
+                <div class="results-island h1-title">
+                  <div class="island-header">
+                    <h3 class="island-title">
+                      <i class="ri-heading"></i> H1 RECOMENDADO
+                    </h3>
+                    <button class="btn-copy" data-copy="resH1" title="Copiar" type="button">
+                      <i class="ri-file-copy-line"></i>
+                    </button>
+                  </div>
+                  <p class="results-copy" id="resH1"></p>
                 </div>
-                <div class="result-block">
-                  <span class="block-label">Cuerpo de Contenido</span>
-                  <div class="body-content-box" id="resBody"></div>
+                <div class="results-island results-island-wide body-content">
+                  <div class="island-header">
+                    <h3 class="island-title">
+                      <i class="ri-draft-line"></i> CUERPO DE CONTENIDO
+                    </h3>
+                    <button class="btn-copy" data-copy="resBody" data-copy-mode="text" title="Copiar texto" type="button">
+                      <i class="ri-file-copy-line"></i>
+                    </button>
+                  </div>
+                  <div class="ai-content-box" id="resBody"></div>
+                </div>
+                <div class="results-island cta-copy">
+                  <div class="island-header">
+                    <h3 class="island-title">
+                      <i class="ri-megaphone-line"></i> CTA
+                    </h3>
+                    <button class="btn-copy" data-copy="resCta" title="Copiar" type="button">
+                      <i class="ri-file-copy-line"></i>
+                    </button>
+                  </div>
+                  <p class="results-copy" id="resCta"></p>
+                </div>
+                <div class="results-island keywords">
+                  <div class="island-header">
+                    <h3 class="island-title">
+                      <i class="ri-key-2-line"></i> KEYWORDS PRINCIPALES
+                    </h3>
+                    <span class="keyword-count" id="keywordCount"></span>
+                  </div>
+                  <ul id="resKeywords" class="keyword-pills"></ul>
                 </div>
               </div>
             </div>
