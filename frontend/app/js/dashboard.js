@@ -379,43 +379,137 @@ function bindCopyButtons() {
   });
 }
 
+function buildPdfSection(accentColor, label, contentHtml) {
+  return `<div style="margin-bottom:18px">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+      <span style="width:3px;height:12px;border-radius:2px;background:${accentColor};display:inline-block;flex-shrink:0"></span>
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6b7280">${label}</span>
+    </div>
+    <div style="background:#f9fafb;border-radius:8px;padding:12px 14px;border:1px solid #e5e7eb;font-size:13px;color:#1f2937;line-height:1.6">${contentHtml}</div>
+  </div>`;
+}
+
 function bindContentExport() {
   const btn = document.getElementById("contentExportBtn");
   if (!btn) return;
 
-  btn.addEventListener("click", () => {
-    const metaTitle = document.getElementById("resMetaTitle")?.innerText.trim() || "";
-    const metaDesc = document.getElementById("resMetaDesc")?.innerText.trim() || "";
-    const h1 = document.getElementById("resH1")?.innerText.trim() || "";
-    const body = document.getElementById("resBody")?.innerText.trim() || "";
-    const cta = document.getElementById("resCta")?.innerText.trim() || "";
-    const keywords = [...document.querySelectorAll("#resKeywords li")]
-      .map((li) => li.innerText.trim())
-      .join(", ");
+  btn.addEventListener("click", async () => {
+    if (!window.jspdf || !window.html2canvas) {
+      showToast("error", "Librerías PDF no disponibles aún, espera un momento");
+      return;
+    }
 
-    const sections = [
-      ["META TITULO", metaTitle],
-      ["META DESCRIPCION", metaDesc],
-      ["H1 RECOMENDADO", h1],
-      ["CUERPO DE CONTENIDO", body],
-      ["CTA", cta],
-      ["KEYWORDS PRINCIPALES", keywords],
-    ];
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="ri-loader-4-line"></i> Generando...';
+    btn.disabled = true;
 
-    const content = sections
-      .map(([label, val]) => `=== ${label} ===\n${val}`)
-      .join("\n\n");
+    try {
+      const metaTitle = document.getElementById("resMetaTitle")?.innerText.trim() || "N/A";
+      const metaDesc  = document.getElementById("resMetaDesc")?.innerText.trim()  || "N/A";
+      const h1        = document.getElementById("resH1")?.innerText.trim()        || "N/A";
+      const bodyText  = document.getElementById("resBody")?.innerText.trim()      || "N/A";
+      const cta       = document.getElementById("resCta")?.innerText.trim()       || "N/A";
+      const keywords  = [...document.querySelectorAll("#resKeywords li")].map((li) => li.innerText.trim()).filter(Boolean);
+      const topic     = document.getElementById("contentTopic")?.value.trim()     || "";
+      const type      = document.getElementById("contentType")?.value             || "";
+      const now       = new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
 
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "contenido-seo.txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast("success", "Contenido exportado correctamente");
+      const container = document.createElement("div");
+      container.style.cssText = "position:fixed;left:-9999px;top:0;width:794px;background:white;font-family:Arial,Helvetica,sans-serif;color:#111827;z-index:-1";
+
+      container.innerHTML = `<div style="padding:52px 48px">
+
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:20px;border-bottom:2px solid #f3e8ff">
+          <div style="font-size:22px;font-weight:800;color:#7c3aed">Echo<span style="color:#a855f7">SEO</span></div>
+          <div style="text-align:right;font-size:11px;color:#6b7280;line-height:1.8">
+            <div style="font-weight:700;color:#374151;font-size:12px">Reporte de Contenido SEO</div>
+            <div>${now}</div>
+            ${topic ? `<div>Tema: ${topic}</div>` : ""}
+            ${type ? `<div>Tipo: ${type.charAt(0).toUpperCase() + type.slice(1)}</div>` : ""}
+          </div>
+        </div>
+
+        <div style="background:#f5f3ff;border-radius:12px;padding:28px 32px;margin-bottom:32px;border:1px solid #ddd6fe">
+          <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#7c3aed;font-weight:700;margin-bottom:10px">Contenido generado con Inteligencia Artificial</div>
+          <div style="font-size:20px;font-weight:700;color:#1e1b4b;line-height:1.3;margin-bottom:${metaDesc !== "N/A" ? "10px" : "0"}">${metaTitle !== "N/A" ? metaTitle : (topic || "Contenido SEO")}</div>
+          ${metaDesc !== "N/A" ? `<div style="font-size:12px;color:#4c1d95;line-height:1.65">${metaDesc}</div>` : ""}
+        </div>
+
+        <div style="display:flex;gap:16px;margin-bottom:4px">
+          <div style="flex:1">${buildPdfSection("#3b82f6", "Meta Título", metaTitle)}</div>
+          <div style="flex:1">${buildPdfSection("#f59e0b", "Meta Descripción", metaDesc)}</div>
+        </div>
+
+        <div style="display:flex;gap:16px;margin-bottom:4px">
+          <div style="flex:1">${buildPdfSection("#10b981", "H1 Recomendado", h1)}</div>
+          <div style="flex:1">${buildPdfSection("#ec4899", "Call to Action", cta)}</div>
+        </div>
+
+        ${keywords.length ? `
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+            <span style="width:3px;height:12px;border-radius:2px;background:#06b6d4;display:inline-block;flex-shrink:0"></span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6b7280">Keywords Principales</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            ${keywords.map((kw) => `<span style="background:#e0f2fe;color:#0369a1;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:600">${kw}</span>`).join("")}
+          </div>
+        </div>` : ""}
+
+        <div style="height:1px;background:#f3f4f6;margin:24px 0"></div>
+
+        <div style="margin-bottom:24px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+            <span style="width:3px;height:12px;border-radius:2px;background:#8b5cf6;display:inline-block;flex-shrink:0"></span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6b7280">Cuerpo de Contenido</span>
+          </div>
+          <div style="background:#f9fafb;border-radius:8px;padding:16px;border:1px solid #e5e7eb;font-size:13px;color:#1f2937;line-height:1.75;white-space:pre-wrap">${bodyText}</div>
+        </div>
+
+        <div style="margin-top:32px;padding-top:14px;border-top:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;color:#7c3aed;font-weight:700">EchoSEO</span>
+          <span style="font-size:11px;color:#9ca3af">Generado con IA · EchoSEO Dashboard · ${now}</span>
+        </div>
+
+      </div>`;
+
+      document.body.appendChild(container);
+
+      const canvas = await window.html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        width: 794,
+      });
+
+      document.body.removeChild(container);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      const imgH = (canvas.height * pageW) / canvas.width;
+
+      let posY = 0;
+      let page = 0;
+      while (posY < imgH) {
+        if (page > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, -posY, pageW, imgH);
+        posY += pageH;
+        page++;
+      }
+
+      pdf.save(`reporte-seo-echoseo.pdf`);
+      showToast("success", "PDF descargado correctamente");
+    } catch (err) {
+      console.error("PDF export error:", err);
+      showToast("error", "No se pudo generar el PDF");
+    } finally {
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+    }
   });
 }
 
@@ -463,6 +557,7 @@ function bindContentForm() {
 
     submitBtn.disabled = true;
     submitBtn.classList.add("is-loading");
+    submitBtn.innerHTML = '<i class="ri-sparkling-2-line"></i> Generando...';
     form.classList.add("is-loading");
     showToast("info", "Generando contenido...");
     loading.classList.remove("is-hidden");
@@ -516,6 +611,8 @@ function bindContentForm() {
     } finally {
       submitBtn.disabled = false;
       submitBtn.classList.remove("is-loading");
+      submitBtn.textContent = "Generar Contenido";
+
       form.classList.remove("is-loading");
       loading.classList.add("is-hidden");
       loading.setAttribute("aria-hidden", "true");
