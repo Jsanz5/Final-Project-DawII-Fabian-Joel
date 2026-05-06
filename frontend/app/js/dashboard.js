@@ -194,6 +194,32 @@ function enforceSession() {
   }
 }
 
+function loadSidebarUser() {
+  const raw = localStorage.getItem("user_session");
+  if (!raw) return;
+  try {
+    const session = JSON.parse(raw);
+    const email = session.email || "";
+    const username = email.split("@")[0] || "Usuario";
+    const initial = username.charAt(0).toUpperCase();
+
+    const avatar = document.getElementById("sidebarUserAvatar");
+    const nameEl = document.getElementById("sidebarUserName");
+    const emailEl = document.getElementById("sidebarUserEmail");
+    const logoutBtn = document.getElementById("sidebarLogout");
+
+    if (avatar) avatar.textContent = initial;
+    if (nameEl) nameEl.textContent = username;
+    if (emailEl) emailEl.textContent = email;
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("user_session");
+        window.location.href = "login.html";
+      });
+    }
+  } catch (e) {}
+}
+
 function initWarpCanvas() {
   const canvas = document.getElementById("auditWarpCanvas");
   if (!canvas) return;
@@ -701,6 +727,7 @@ function loadHistory() {
 
 document.addEventListener("DOMContentLoaded", () => {
   enforceSession();
+  loadSidebarUser();
   bindSidebar();
   bindAuditForm();
   initWarpCanvas();
