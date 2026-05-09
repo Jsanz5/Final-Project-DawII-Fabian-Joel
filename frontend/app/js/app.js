@@ -111,9 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <span>Mi Perfil</span>
           </a>
           <a href="dashboard.html" class="dropdown-item" onclick="event.preventDefault()">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2ZM8 3.5C8.82843 3.5 9.5 4.17157 9.5 5C9.5 5.82843 8.82843 6.5 8 6.5C7.17157 6.5 6.5 5.82843 6.5 5C6.5 4.17157 7.17157 3.5 8 3.5ZM8_11.5C6.5_11.5_5.20711_10.7535_4.5_9.5C4.40625_9.31256_4.40625_9.09375_4.5_8.90625C5.20711_7.74646_6.5_7_8_7C9.5_7_10.7929_7.74646_1<|fim_suffix|>
-            </svg>
+            <i class="ri-dashboard-line"></i>
             <span>Dashboard</span>
           </a>
           <div class="dropdown-divider"></div>
