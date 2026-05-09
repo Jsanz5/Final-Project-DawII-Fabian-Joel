@@ -15,15 +15,28 @@ class AuditDao
     // create de una nueva auditoría (inserta un nuevo registro en la tabla audits)
     public function createAudit($userId, $url, $status = 'pending')
     {
-        $sql = "INSERT INTO audits (user_id, url, status, created_at) VALUES (:user_id, :url, :status, CURRENT_TIMESTAMP)";
+        $sql = "INSERT INTO audits (user_id, url, created_at) VALUES (:user_id, :url, CURRENT_TIMESTAMP)";
         $stmt = $this->pdo->prepare($sql);
 
         $stmt->execute([
             'user_id' => $userId,
-            'url' => $url,
-            'status' => $status
+            'url' => $url
         ]);
 
+        return $this->pdo->lastInsertId();
+    }
+
+    public function saveCompletedAudit($userId, $url, $seoScore, $reportData)
+    {
+        $sql = "INSERT INTO audits (user_id, url, seo_score, report_data, created_at) 
+                VALUES (:user_id, :url, :seo_score, :report_data, CURRENT_TIMESTAMP)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'user_id' => $userId,
+            'url' => $url,
+            'seo_score' => $seoScore,
+            'report_data' => $reportData
+        ]);
         return $this->pdo->lastInsertId();
     }
 
@@ -38,16 +51,15 @@ class AuditDao
     }
 
     // update (para actualizar el estado, el SEO score y los datos del reporte después del scraping)
-    public function updateAudit($auditId, $seoScore = null, $reportData = null, $status = 'completed')
+    public function updateAudit($auditId, $seoScore = null, $reportData = null)
     {
-        $sql = "UPDATE audits SET seo_score = :seo_score, report_data = :report_data, status = :status WHERE id = :id";
+        $sql = "UPDATE audits SET seo_score = :seo_score, report_data = :report_data WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
             'id' => $auditId,
             'seo_score' => $seoScore,
-            'report_data' => $reportData,
-            'status' => $status
+            'report_data' => $reportData
         ]);
     }
 
@@ -64,7 +76,7 @@ class AuditDao
     // get de auditorías pendientes (para que el worker de Python pueda obtener las tareas que debe procesar)
     public function getPendingAudits()
     {
-        $sql = "SELECT * FROM audits WHERE status = 'pending' ORDER BY created_at ASC";
+        $sql = "SELECT * FROM audits WHERE seo_score IS NULL ORDER BY created_at ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
 
