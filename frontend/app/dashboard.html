@@ -23,7 +23,7 @@
     <div class="dashboard-shell">
       <aside class="dashboard-sidebar">
         <div class="sidebar-brand">
-          <a href="#" class="logo">
+          <a href="index.html" class="logo">
             <div class="logo-mark">
               <img
                 src="./assets/img/EchoSEO-Logo.png"
@@ -61,10 +61,16 @@
           <div class="sidebar-user" id="sidebarUser">
             <div class="sidebar-user-avatar" id="sidebarUserAvatar">?</div>
             <div class="sidebar-user-info">
-              <span class="sidebar-user-name" id="sidebarUserName">Usuario</span>
+              <span class="sidebar-user-name" id="sidebarUserName"
+                >Usuario</span
+              >
               <span class="sidebar-user-email" id="sidebarUserEmail">-</span>
             </div>
-            <button class="sidebar-logout-btn" id="sidebarLogout" title="Cerrar sesión">
+            <button
+              class="sidebar-logout-btn"
+              id="sidebarLogout"
+              title="Cerrar sesión"
+            >
               <i class="ri-logout-box-r-line"></i>
             </button>
           </div>
@@ -233,7 +239,9 @@
                   <div class="content-card">
                     <div class="content-card-label">
                       <span class="content-card-title">Tema o Descripción</span>
-                      <span class="content-card-hint">Define el foco del texto</span>
+                      <span class="content-card-hint"
+                        >Define el foco del texto</span
+                      >
                     </div>
                     <div class="content-card-field">
                       <input
@@ -249,7 +257,9 @@
                   <div class="content-card">
                     <div class="content-card-label">
                       <span class="content-card-title">Tipo de Contenido</span>
-                      <span class="content-card-hint">Elige el formato ideal</span>
+                      <span class="content-card-hint"
+                        >Elige el formato ideal</span
+                      >
                     </div>
                     <div class="content-card-field">
                       <div
@@ -282,7 +292,9 @@
                   <div class="content-card">
                     <div class="content-card-label">
                       <span class="content-card-title">Ubicación</span>
-                      <span class="content-card-hint">Opcional para Local SEO</span>
+                      <span class="content-card-hint"
+                        >Opcional para Local SEO</span
+                      >
                     </div>
                     <div class="content-card-field">
                       <input
@@ -305,11 +317,11 @@
                   </button>
                   <div class="content-action-status" id="contentActionStatus">
                     <section class="loader" aria-hidden="true">
-                      <div class="slider" style="--i:0"></div>
-                      <div class="slider" style="--i:1"></div>
-                      <div class="slider" style="--i:2"></div>
-                      <div class="slider" style="--i:3"></div>
-                      <div class="slider" style="--i:4"></div>
+                      <div class="slider" style="--i: 0"></div>
+                      <div class="slider" style="--i: 1"></div>
+                      <div class="slider" style="--i: 2"></div>
+                      <div class="slider" style="--i: 3"></div>
+                      <div class="slider" style="--i: 4"></div>
                     </section>
                   </div>
                 </div>
@@ -346,7 +358,12 @@
                     </h3>
                     <div class="island-actions">
                       <span class="char-count" id="metaTitleCount">0 / 60</span>
-                      <button class="btn-copy" data-copy="resMetaTitle" title="Copiar" type="button">
+                      <button
+                        class="btn-copy"
+                        data-copy="resMetaTitle"
+                        title="Copiar"
+                        type="button"
+                      >
                         <i class="ri-file-copy-line"></i>
                       </button>
                     </div>
@@ -360,7 +377,12 @@
                     </h3>
                     <div class="island-actions">
                       <span class="char-count" id="metaDescCount">0 / 160</span>
-                      <button class="btn-copy" data-copy="resMetaDesc" title="Copiar" type="button">
+                      <button
+                        class="btn-copy"
+                        data-copy="resMetaDesc"
+                        title="Copiar"
+                        type="button"
+                      >
                         <i class="ri-file-copy-line"></i>
                       </button>
                     </div>
@@ -372,7 +394,12 @@
                     <h3 class="island-title">
                       <i class="ri-heading"></i> H1 RECOMENDADO
                     </h3>
-                    <button class="btn-copy" data-copy="resH1" title="Copiar" type="button">
+                    <button
+                      class="btn-copy"
+                      data-copy="resH1"
+                      title="Copiar"
+                      type="button"
+                    >
                       <i class="ri-file-copy-line"></i>
                     </button>
                   </div>
@@ -383,7 +410,13 @@
                     <h3 class="island-title">
                       <i class="ri-draft-line"></i> CUERPO DE CONTENIDO
                     </h3>
-                    <button class="btn-copy" data-copy="resBody" data-copy-mode="text" title="Copiar texto" type="button">
+                    <button
+                      class="btn-copy"
+                      data-copy="resBody"
+                      data-copy-mode="text"
+                      title="Copiar texto"
+                      type="button"
+                    >
                       <i class="ri-file-copy-line"></i>
                     </button>
                   </div>
@@ -394,7 +427,12 @@
                     <h3 class="island-title">
                       <i class="ri-megaphone-line"></i> CTA
                     </h3>
-                    <button class="btn-copy" data-copy="resCta" title="Copiar" type="button">
+                    <button
+                      class="btn-copy"
+                      data-copy="resCta"
+                      title="Copiar"
+                      type="button"
+                    >
                       <i class="ri-file-copy-line"></i>
                     </button>
                   </div>
@@ -502,8 +540,16 @@
       </main>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="js/app.js"></script>
     <script src="js/services/pySeoService.js"></script>
     <script src="js/dashboard.js"></script>

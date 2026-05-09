@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap");
 :root {
-  --color-cloud-canvas: #f5f2f0;
+  --color-cloud-canvas: #f9fafb;
   --color-porcelain-surface: #ffffff;
   --color-graphite-text: #333333;
   --color-ink-text: #000000;
@@ -1936,4 +1936,3 @@ body.auth-page {
     flex-direction: column;
   }
 }
-
