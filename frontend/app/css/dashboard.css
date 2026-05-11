@@ -338,32 +338,41 @@
 }
 
 .audit-loading {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
+  display: none;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-12);
-  background: rgba(245,242,240,0.75);
-  opacity: 0;
+  align-self: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 100px;
+  padding: 10px 22px 10px 16px;
+  border: 1px solid rgba(241, 204, 255, 0.7);
+  box-shadow: 0 8px 28px rgba(168, 85, 247, 0.12);
+  white-space: nowrap;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  animation: fadeUp 0.3s ease;
 }
 
 .canvas-frame.is-loading .audit-loading {
-  opacity: 1;
-  pointer-events: auto;
+  display: flex;
+}
+
+.canvas-frame.is-loading .audit-hint {
+  display: none;
 }
 
 .loading-ring {
-  width: 45px;
-  height: 200px;
+  width: 28px;
+  height: 42px;
+  flex-shrink: 0;
   background:
-    linear-gradient(#0000 calc(1*100%/6), #000 0 calc(3*100%/6), #0000 0),
-    linear-gradient(#0000 calc(2*100%/6), #000 0 calc(4*100%/6), #0000 0),
-    linear-gradient(#0000 calc(3*100%/6), #000 0 calc(5*100%/6), #0000 0);
-  background-size: 10px 400%;
+    linear-gradient(#0000 calc(1*100%/6), #a855f7 0 calc(3*100%/6), #0000 0),
+    linear-gradient(#0000 calc(2*100%/6), #e879f9 0 calc(4*100%/6), #0000 0),
+    linear-gradient(#0000 calc(3*100%/6), #818cf8 0 calc(5*100%/6), #0000 0);
+  background-size: 7px 400%;
   background-repeat: no-repeat;
   animation: matrix 1s infinite linear;
 }
@@ -374,8 +383,16 @@
 }
 
 .audit-loading p {
-  font-size: 0.95rem;
-  color: var(--color-graphite-text);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #a855f7 0%, #818cf8 35%, #e879f9 65%, #a855f7 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: analyzeShimmer 2.5s linear infinite;
 }
 
 .canvas-overlay {

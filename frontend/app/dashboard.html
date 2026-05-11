@@ -96,10 +96,6 @@
                   id="auditWarpCanvas"
                   aria-label="Vista interactiva"
                 ></canvas>
-                <div class="audit-loading" id="auditLoading" aria-hidden="true">
-                  <div class="loading-ring"></div>
-                  <p>Analizando sitio...</p>
-                </div>
                 <div class="canvas-overlay">
                   <h2 class="audit-title">Audita en tiempo real</h2>
                   <label class="audit-label" for="auditUrlInput"
@@ -118,12 +114,16 @@
                       class="btn-purple"
                       type="button"
                     >
-                      Auditar
+                      <i class="ri-pulse-line ai-spark-icon"></i> Auditar
                     </button>
                   </div>
                   <p class="audit-hint">
                     Solo URLs publicas. Ej: https://miempresa.com
                   </p>
+                  <div class="audit-loading" id="auditLoading" aria-hidden="true">
+                    <div class="loading-ring"></div>
+                    <p>Realizando auditoría...</p>
+                  </div>
                 </div>
               </div>
             </div>
