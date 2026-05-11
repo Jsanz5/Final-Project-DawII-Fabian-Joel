@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </svg>
             <span>Mi Perfil</span>
           </a>
-          <a href="dashboard.html" class="dropdown-item" onclick="event.preventDefault()">
+          <a href="dashboard.html" class="dropdown-item">
             <i class="ri-dashboard-line"></i>
             <span>Dashboard</span>
           </a>
