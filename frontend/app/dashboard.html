@@ -89,7 +89,6 @@
               mejoras criticas.
             </p>
           </div>
-
           <div class="audit-layout">
             <div class="audit-canvas-card">
               <div class="canvas-frame" id="canvasFrame">
@@ -128,7 +127,6 @@
                 </div>
               </div>
             </div>
-
             <div
               class="audit-results-card is-hidden"
               id="auditResults"
@@ -140,7 +138,6 @@
                   <h2 id="auditStatus">Listo para auditar</h2>
                 </div>
               </div>
-
               <div class="results-grid">
                 <div class="results-island island-score">
                   <h3 class="island-title">
@@ -253,7 +250,6 @@
                       />
                     </div>
                   </div>
-
                   <div class="content-card">
                     <div class="content-card-label">
                       <span class="content-card-title">Tipo de Contenido</span>
@@ -288,7 +284,6 @@
                       <input type="hidden" id="contentType" value="articulo" />
                     </div>
                   </div>
-
                   <div class="content-card">
                     <div class="content-card-label">
                       <span class="content-card-title">Ubicación</span>
@@ -306,13 +301,13 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="content-form-action">
                   <button
                     type="submit"
                     class="btn-purple"
                     id="contentSubmitBtn"
                   >
+                    <i class="ri-sparkling-2-fill ai-spark-icon" aria-hidden="true"></i>
                     Generar Contenido
                   </button>
                   <div class="content-action-status" id="contentActionStatus">
@@ -335,8 +330,6 @@
                 <p>Generando AI Content... (puede tardar)</p>
               </div>
             </div>
-
-            <!-- Resultados Generados -->
             <div
               class="audit-results-card content-results is-hidden"
               id="contentResults"
@@ -466,31 +459,64 @@
           <div class="content-layout">
             <div class="audit-canvas-card">
               <form id="analyzeForm" class="content-form">
-                <label class="audit-label" for="analyzeKeyword"
-                  >Palabra Clave</label
-                >
-                <input
-                  type="text"
-                  id="analyzeKeyword"
-                  class="audit-input"
-                  placeholder="ej. comprar zapatillas running"
-                  required
-                />
-
-                <label class="audit-label" for="analyzeLocation"
-                  >Ubicación</label
-                >
-                <input
-                  type="text"
-                  id="analyzeLocation"
-                  class="audit-input"
-                  value="Spain"
-                  placeholder="ej. Spain"
-                />
-
-                <button type="submit" class="btn-purple" id="analyzeSubmitBtn">
-                  Analizar Competencia
-                </button>
+                <div class="content-form-fields">
+                  <div class="content-card">
+                    <div class="content-card-label">
+                      <span class="content-card-title">Palabra Clave</span>
+                      <span class="content-card-hint"
+                        >Término que quieres posicionar</span
+                      >
+                    </div>
+                    <div class="content-card-field">
+                      <input
+                        type="text"
+                        id="analyzeKeyword"
+                        class="audit-input"
+                        placeholder="ej. comprar zapatillas running"
+                        autocomplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="content-card">
+                    <div class="content-card-label">
+                      <span class="content-card-title">Ubicación</span>
+                      <span class="content-card-hint"
+                        >Mercado geográfico objetivo</span
+                      >
+                    </div>
+                    <div class="content-card-field">
+                      <input
+                        type="text"
+                        id="analyzeLocation"
+                        class="audit-input"
+                        placeholder="ej. España"
+                        autocomplete="off"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="content-form-action">
+                  <button
+                    type="submit"
+                    class="btn-purple"
+                    id="analyzeSubmitBtn"
+                  >
+                    <i class="ri-bar-chart-grouped-line ai-spark-icon"></i> Analizar
+                    Competencia
+                  </button>
+                  <div class="analyze-loader">
+                    <div class="wrapper">
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                      <div class="shadow"></div>
+                      <div class="shadow"></div>
+                      <div class="shadow"></div>
+                    </div>
+                    <span class="analyze-loader-label">Analizando</span>
+                  </div>
+                </div>
               </form>
               <div
                 class="audit-loading is-hidden"
@@ -501,40 +527,11 @@
                 <p>Analizando SERPs... (puede tardar)</p>
               </div>
             </div>
-
-            <div class="audit-results-card is-hidden" id="analyzeResults">
-              <div class="results-header">
-                <h2>Resultados del Análisis</h2>
-              </div>
-              <div class="results-islands">
-                <div class="results-island results-island-wide">
-                  <h3>Estrategia SEO</h3>
-                  <div class="content-result-blocks">
-                    <div class="result-block">
-                      <span class="block-label">Intención de Búsqueda</span>
-                      <p id="resSearchIntent"></p>
-                    </div>
-                    <div class="result-block">
-                      <span class="block-label">H1 Sugerido</span>
-                      <p id="resAnalyzeH1"></p>
-                    </div>
-                    <div class="result-block">
-                      <span class="block-label">Oportunidad / Content Gap</span>
-                      <p id="resContentGap"></p>
-                    </div>
-                    <div class="result-block">
-                      <span class="block-label">Estructura H2 Sugerida</span>
-                      <ul id="resAnalyzeH2" class="results-list"></ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="results-island results-island-wide">
-                  <h3>Top Competidores</h3>
-                  <div id="resCompetitorsList" class="competitors-grid"></div>
-                </div>
-              </div>
-            </div>
+            <div
+              class="audit-results-card is-hidden"
+              id="analyzeResults"
+              aria-live="polite"
+            ></div>
           </div>
         </section>
       </main>

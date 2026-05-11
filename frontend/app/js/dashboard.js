@@ -390,28 +390,22 @@ function bodyTextToHtml(text) {
 function calcPageBreaks(container, pageHpx) {
   const totalH   = container.scrollHeight;
   const contTop  = container.getBoundingClientRect().top;
-
   const bottoms = [...container.querySelectorAll("*")]
     .map(el => el.getBoundingClientRect().bottom - contTop)
     .filter(b => b > 0 && b < totalH)
     .sort((a, b) => a - b);
-
   const breaks  = [0];
   let targetEnd = pageHpx;
-
   while (targetEnd < totalH) {
     let bestY = targetEnd;
     for (let i = bottoms.length - 1; i >= 0; i--) {
       if (bottoms[i] <= targetEnd) { bestY = bottoms[i]; break; }
     }
-
     const lastBreak = breaks[breaks.length - 1];
     if (bestY <= lastBreak + 20) bestY = targetEnd;
-
     breaks.push(bestY);
     targetEnd = bestY + pageHpx;
   }
-
   return breaks;
 }
 
@@ -452,9 +446,7 @@ function bindContentExport() {
       ].join(";");
 
       container.innerHTML = `<div style="padding:32px 36px">
-
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;
-                    margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #f3e8ff">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #f3e8ff">
           <div style="font-size:20px;font-weight:800;color:#7c3aed">Echo<span style="color:#a855f7">SEO</span></div>
           <div style="text-align:right;font-size:10px;color:#6b7280;line-height:1.6">
             <div style="font-weight:700;color:#374151;font-size:11px">Reporte de Contenido SEO</div>
@@ -463,26 +455,20 @@ function bindContentExport() {
             ${type  ? `<div>Tipo: ${type.charAt(0).toUpperCase()+type.slice(1)}</div>` : ""}
           </div>
         </div>
-
-        <div style="background:#f5f3ff;border-radius:10px;padding:18px 24px 22px;
-                    margin-bottom:16px;border:1px solid #ddd6fe">
+        <div style="background:#f5f3ff;border-radius:10px;padding:18px 24px 22px;margin-bottom:16px;border:1px solid #ddd6fe">
           <div style="font-size:17px;font-weight:700;color:#1e1b4b;line-height:1.3;margin-bottom:6px">
             ${metaTitle !== "N/A" ? metaTitle : (topic || "Contenido SEO")}
           </div>
-          ${metaDesc !== "N/A"
-            ? `<div style="font-size:11px;color:#4c1d95;line-height:1.55">${metaDesc}</div>` : ""}
+          ${metaDesc !== "N/A" ? `<div style="font-size:11px;color:#4c1d95;line-height:1.55">${metaDesc}</div>` : ""}
         </div>
-
         <div style="display:flex;gap:12px;margin-bottom:12px">
           <div style="flex:1;${blockStyle()}">${blockLabel("#3b82f6","Meta Título")}${blockContent(metaTitle)}</div>
           <div style="flex:1;${blockStyle()}">${blockLabel("#f59e0b","Meta Descripción")}${blockContent(metaDesc)}</div>
         </div>
-
         <div style="display:flex;gap:12px;margin-bottom:12px">
           <div style="flex:1;${blockStyle()}">${blockLabel("#10b981","H1 Recomendado")}${blockContent(h1)}</div>
           <div style="flex:1;${blockStyle()}">${blockLabel("#ec4899","Call to Action")}${blockContent(cta)}</div>
         </div>
-
         ${keywords.length ? `
         <div style="margin-bottom:14px">
           ${blockLabel("#06b6d4","Keywords Principales")}
@@ -490,23 +476,16 @@ function bindContentExport() {
             ${keywords.map(kw=>`<span style="background:#e0f2fe;color:#0369a1;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600">${kw}</span>`).join("")}
           </div>
         </div>` : ""}
-
         <div style="height:1px;background:#e5e7eb;margin:14px 0 16px"></div>
-
         <div style="margin-bottom:16px">
           ${blockLabel("#8b5cf6","Cuerpo de Contenido")}
-          <div style="background:#f9fafb;border-radius:7px;padding:14px 16px;
-                      border:1px solid #e5e7eb;margin-top:6px;
-                      overflow-wrap:break-word;word-break:break-word">
+          <div style="background:#f9fafb;border-radius:7px;padding:14px 16px;border:1px solid #e5e7eb;margin-top:6px;overflow-wrap:break-word;word-break:break-word">
             ${bodyHtml}
           </div>
         </div>
-
-        <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb;
-                    display:flex;justify-content:space-between;align-items:center">
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center">
           <span style="font-size:13px;color:#7c3aed;font-weight:700">EchoSEO</span>
         </div>
-
       </div>`;
 
       document.body.appendChild(container);
@@ -533,30 +512,19 @@ function bindContentExport() {
 
       for (let i = 0; i < breakStarts.length; i++) {
         if (i > 0) pdf.addPage();
-
         const startY = breakStarts[i];
         const endY   = (i + 1 < breakStarts.length) ? breakStarts[i + 1] : totalLogH;
         const sliceH = endY - startY;
-
         const sliceCanvas  = document.createElement("canvas");
         sliceCanvas.width  = canvas.width;
         sliceCanvas.height = Math.max(1, Math.round(sliceH * SCALE));
         const sliceCtx     = sliceCanvas.getContext("2d");
-
         sliceCtx.drawImage(
           canvas,
-          0,            Math.round(startY * SCALE),
-          canvas.width, Math.round(sliceH  * SCALE),
-          0,            0,
-          canvas.width, Math.round(sliceH  * SCALE),
+          0, Math.round(startY * SCALE), canvas.width, Math.round(sliceH * SCALE),
+          0, 0,                          canvas.width, Math.round(sliceH * SCALE),
         );
-
-        pdf.addImage(
-          sliceCanvas.toDataURL("image/jpeg", 0.92),
-          "JPEG", 0, 0,
-          pageW,
-          sliceH / pxPerMm,
-        );
+        pdf.addImage(sliceCanvas.toDataURL("image/jpeg", 0.92), "JPEG", 0, 0, pageW, sliceH / pxPerMm);
       }
 
       pdf.save("reporte-seo-echoseo.pdf");
@@ -572,46 +540,157 @@ function bindContentExport() {
   });
 }
 
+function renderAnalyzeResults(data) {
+  const resultsEl = document.getElementById("analyzeResults");
+  if (!resultsEl) return;
+
+  const analy  = data.seo_analysis || {};
+  const comps  = data.competitors  || [];
+  const h2List = analy.h2_lista    || [];
+
+  const copyableField = (id, text, extraClass = "") => `
+    <div class="island-header">
+      <div id="${id}" class="results-copy ${extraClass}">${text || "N/A"}</div>
+      <button class="btn-copy" data-copy="${id}" aria-label="Copiar">
+        <i class="ri-file-copy-line"></i>
+      </button>
+    </div>`;
+
+  const competitorCards = comps.length
+    ? comps.map((c, idx) => `
+        <div class="results-island analyze-competitor-card">
+          <div class="analyze-competitor-header">
+            <span class="analyze-rank">#${c.ranking || idx + 1}</span>
+            <h4 class="analyze-competitor-title">${c.title || "Sin título"}</h4>
+          </div>
+          <a href="${c.url || "#"}" class="analyze-competitor-url" target="_blank" rel="noopener">
+            <i class="ri-external-link-line"></i>${c.url || "—"}
+          </a>
+          ${c.snippet ? `<p class="analyze-competitor-snippet">${c.snippet}</p>` : ""}
+        </div>`).join("")
+    : `<p class="analyze-empty">No se encontraron competidores.</p>`;
+
+  resultsEl.innerHTML = `
+    <div class="analyze-results-wrap">
+
+      <div class="analyze-results-header">
+        <p class="panel-eyebrow">Análisis Completado</p>
+        <h2>Resultados de Competencia</h2>
+      </div>
+
+      <div class="results-islands">
+
+        <div class="results-island analyze-intent">
+          <div class="island-header">
+            <div class="island-title"><i class="ri-search-eye-line"></i> Intención de Búsqueda</div>
+          </div>
+          ${copyableField("resSearchIntent", analy.search_intent, "analyze-intent-copy")}
+        </div>
+
+        <div class="results-island analyze-h1-island">
+          <div class="island-header">
+            <div class="island-title"><i class="ri-heading"></i> H1 Sugerido</div>
+          </div>
+          ${copyableField("resAnalyzeH1", analy.h1_sugerido, "analyze-h1-copy")}
+        </div>
+
+        <div class="results-island results-island-wide analyze-gap">
+          <div class="island-header">
+            <div class="island-title"><i class="ri-bar-chart-grouped-line"></i> Content Gap</div>
+          </div>
+          ${copyableField("resContentGap", analy.content_gap, "analyze-gap-copy")}
+        </div>
+
+        <div class="results-island results-island-wide analyze-h2-island">
+          <div class="island-header">
+            <div class="island-title"><i class="ri-list-check-3"></i> Estructura H2 Recomendada</div>
+            <span class="keyword-count">${h2List.length} secciones</span>
+          </div>
+          <ul id="resAnalyzeH2" class="analyze-h2-list">
+            ${h2List.length
+              ? h2List.map((h, i) => `
+                  <li class="analyze-h2-item">
+                    <span class="analyze-h2-num">${i + 1}</span>
+                    <span>${h}</span>
+                  </li>`).join("")
+              : `<li class="analyze-h2-item"><span>Sin datos</span></li>`}
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="analyze-competitors-section">
+        <div class="analyze-section-label">
+          <i class="ri-trophy-line"></i> Top Competidores
+          <span class="keyword-count">${comps.length} resultados</span>
+        </div>
+        <div id="resCompetitorsList" class="analyze-competitors-grid">
+          ${competitorCards}
+        </div>
+      </div>
+
+    </div>`;
+
+  resultsEl.classList.remove("is-hidden");
+  animateResultIslands(resultsEl);
+  bindCopyButtons();
+}
 function bindAnalyzeForm() {
   const form      = document.getElementById("analyzeForm");
   const submitBtn = document.getElementById("analyzeSubmitBtn");
   const loading   = document.getElementById("analyzeLoading");
   const results   = document.getElementById("analyzeResults");
+  const labelEl   = form?.querySelector(".analyze-loader-label");
   if (!form) return;
+
+  const MESSAGES = [
+    "Escaneando SERPs",
+    "Detectando competidores",
+    "Procesando datos",
+    "Generando insights",
+  ];
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const keyword       = document.getElementById("analyzeKeyword").value;
     const locationField = document.getElementById("analyzeLocation").value;
-    submitBtn.disabled=true; submitBtn.classList.add("is-loading");
-    loading.classList.remove("is-hidden"); loading.setAttribute("aria-hidden","false");
+
+    submitBtn.disabled = true;
+    form.classList.add("is-loading");
+    loading.classList.remove("is-hidden");
+    loading.setAttribute("aria-hidden", "false");
     results.classList.add("is-hidden");
+    showToast("info", "Iniciando análisis de competencia...");
+
+    let msgIdx = 0;
+    if (labelEl) labelEl.textContent = MESSAGES[0];
+
+    const cycleMessage = () => {
+      if (!labelEl) return;
+      labelEl.style.opacity = "0";
+      setTimeout(() => {
+        msgIdx = (msgIdx + 1) % MESSAGES.length;
+        labelEl.textContent = MESSAGES[msgIdx];
+        labelEl.style.opacity = "1";
+      }, 300);
+    };
+    const msgInterval = setInterval(cycleMessage, 2000);
+
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
     try {
-      const data  = await window.pySeoService.analyzeSeo(keyword, locationField);
-      const analy = data.seo_analysis || {};
-      document.getElementById("resSearchIntent").innerText = analy.search_intent || "N/A";
-      document.getElementById("resAnalyzeH1").innerText    = analy.h1_sugerido   || "N/A";
-      document.getElementById("resContentGap").innerText   = analy.content_gap   || "N/A";
-      const h2Ul   = document.getElementById("resAnalyzeH2");
-      h2Ul.innerHTML = "";
-      const h2List = analy.h2_lista || [];
-      if (h2List.length) {
-        h2List.forEach(h => { const li=document.createElement("li"); li.innerText=h; h2Ul.appendChild(li); });
-      } else { h2Ul.innerHTML = "<li>No data</li>"; }
-      const listDiv = document.getElementById("resCompetitorsList");
-      listDiv.innerHTML = (data.competitors||[]).map(c=>`
-        <div class="competitor-card">
-          <div><span class="competitor-rank">#${c.ranking||"?"}</span>
-          <h4 class="competitor-title">${c.title||"Sin Título"}</h4></div>
-          <a href="${c.url}" class="competitor-url" target="_blank">${c.url||"#"}</a>
-          <p class="competitor-snippet">${c.snippet||""}</p>
-        </div>`).join("");
-      results.classList.remove("is-hidden");
-      showToast("success","Análisis de competencia listo");
-    } catch(err) { showToast("error", err.message); }
-    finally {
-      submitBtn.disabled=false; submitBtn.classList.remove("is-loading");
-      loading.classList.add("is-hidden"); loading.setAttribute("aria-hidden","true");
+      const data = await window.pySeoService.analyzeSeo(keyword, locationField);
+      renderAnalyzeResults(data);
+      showToast("success", "Análisis de competencia listo");
+    } catch(err) {
+      showToast("error", err.message);
+    } finally {
+      clearInterval(msgInterval);
+      if (labelEl) { labelEl.textContent = MESSAGES[0]; labelEl.style.opacity = "1"; }
+      submitBtn.disabled = false;
+      form.classList.remove("is-loading");
+      loading.classList.add("is-hidden");
+      loading.setAttribute("aria-hidden", "true");
     }
   });
 }
