@@ -69,7 +69,7 @@ function loadSidebarUser() {
     const emailEl   = document.getElementById("sidebarUserEmail");
     const logoutBtn = document.getElementById("sidebarLogout");
     if (nameEl)  nameEl.textContent  = username;
-    if (emailEl) emailEl.textContent = email;
+    if (emailEl) emailEl.style.display = "none";
     if (avatar) {
       const savedAvatar = localStorage.getItem("user_avatar");
       if (savedAvatar) {

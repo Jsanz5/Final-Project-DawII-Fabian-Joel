@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const username = email.split("@")[0] || "Usuario";
 
   document.getElementById("profileUserName").textContent = username;
-  document.getElementById("profileUserEmail").textContent = email;
+  document.getElementById("profileUserEmail").style.display = "none";
 
   loadSidebarUser();
   renderCurrentAvatar(username);
@@ -68,7 +68,7 @@ function loadSidebarUser() {
   const avatarEl = document.getElementById("sidebarUserAvatar");
 
   if (nameEl) nameEl.textContent = username;
-  if (emailEl) emailEl.textContent = email;
+  if (emailEl) emailEl.style.display = "none";
 
   if (avatarEl) {
     const saved = localStorage.getItem("user_avatar");
