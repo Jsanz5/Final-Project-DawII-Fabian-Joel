@@ -368,7 +368,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else {
       if (inp) {
-        inp.value = "miempresa.com";
         inp.focus();
       }
     }
