@@ -1151,6 +1151,13 @@
   gap: var(--spacing-24);
 }
 
+.analyze-results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+}
+
 .analyze-results-header h2 {
   font-family: var(--font-pp-editorial-new);
   font-size: 2rem;
