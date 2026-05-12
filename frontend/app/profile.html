@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Perfil - EchoSEO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css"
+      integrity="sha512-kJlvECunwXftkPwyvHbclArO8wszgBGisiLeuDFwNM8ws+wKIw0sv1os3ClWZOcrEB2eRXULYUsm8OVRGJKwGA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/profile.css" />
+  </head>
+  <body class="dashboard-page">
+    <div class="dashboard-shell">
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-mark">
+              <img src="./assets/img/EchoSEO-Logo.png" alt="EchoSEO" class="header-logo-img" />
+            </div>
+          </a>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-item">
+            <i class="ri-arrow-left-line"></i>
+            <span>Volver al Dashboard</span>
+          </a>
+          <a href="dashboard.html#audit" class="sidebar-item">
+            <i class="ri-search-eye-line"></i>
+            <span>Audit</span>
+          </a>
+          <a href="dashboard.html#history" class="sidebar-item">
+            <i class="ri-history-line"></i>
+            <span>Historial</span>
+          </a>
+          <a href="dashboard.html#content" class="sidebar-item">
+            <i class="ri-edit-box-line"></i>
+            <span>Generador IA</span>
+          </a>
+          <a href="dashboard.html#analyze" class="sidebar-item">
+            <i class="ri-bar-chart-2-line"></i>
+            <span>Competencia</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-user" id="sidebarUser">
+            <div class="sidebar-user-avatar" id="sidebarUserAvatar">?</div>
+            <div class="sidebar-user-info">
+              <span class="sidebar-user-name" id="sidebarUserName">Usuario</span>
+              <span class="sidebar-user-email" id="sidebarUserEmail">-</span>
+            </div>
+            <button class="sidebar-logout-btn" id="sidebarLogout" title="Cerrar sesión">
+              <i class="ri-logout-box-r-line"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+      <main class="dashboard-main">
+        <div class="panel-header">
+          <div>
+            <p class="panel-eyebrow">Cuenta</p>
+            <h1>Mi Perfil</h1>
+          </div>
+          <p class="panel-subtitle">Personaliza tu foto de perfil o elige un avatar generado por IA.</p>
+        </div>
+
+        <div class="profile-card">
+        <div class="profile-card-inner">
+          <div class="profile-avatar-section">
+            <div class="profile-avatar-wrapper">
+              <div class="profile-avatar-large" id="profileAvatarLarge"></div>
+              <label class="profile-avatar-edit-btn" for="photoInput" title="Subir foto">
+                <i class="ri-camera-line"></i>
+              </label>
+            </div>
+            <div class="profile-user-info">
+              <h2 class="profile-username" id="profileUserName">Usuario</h2>
+              <p class="profile-useremail" id="profileUserEmail">-</p>
+            </div>
+          </div>
+          <div class="profile-tabs">
+            <button class="profile-tab active" data-tab="upload">
+              <i class="ri-upload-cloud-line"></i> Subir foto
+            </button>
+            <button class="profile-tab" data-tab="ai-avatars">
+              <i class="ri-sparkling-line"></i> Memojis IA
+            </button>
+          </div>
+          <div class="profile-tab-content active" id="tab-upload">
+            <div class="upload-zone" id="uploadZone">
+              <input type="file" id="photoInput" accept="image/*" hidden />
+              <i class="ri-image-add-line upload-zone-icon"></i>
+              <p class="upload-zone-title">Arrastra tu foto aquí</p>
+              <p class="upload-zone-subtitle">o haz clic para seleccionar</p>
+              <p class="upload-zone-hint">PNG, JPG, GIF · máx. 5 MB</p>
+            </div>
+          </div>
+          <div class="profile-tab-content" id="tab-ai-avatars">
+            <div class="ai-avatars-header">
+              <p class="ai-avatars-subtitle">Memojis únicos generados por IA. Haz clic en uno para usarlo.</p>
+              <button class="btn-regenerate" id="btnRegenerate">
+                <i class="ri-refresh-line"></i> Generar nuevos
+              </button>
+            </div>
+            <div class="ai-avatars-grid" id="aiAvatarsGrid">
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn-save-avatar" id="btnSaveAvatar" disabled>
+              <i class="ri-save-line"></i> Guardar cambios
+            </button>
+          </div>
+
+        </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/profile.js"></script>
+  </body>
+</html>

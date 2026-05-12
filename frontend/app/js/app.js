@@ -89,11 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const userName = user.email.split("@")[0];
     const userInitial = userName.charAt(0).toUpperCase();
+    const savedAvatar = localStorage.getItem("user_avatar");
+    const avatarHtml = savedAvatar
+      ? `<div class="user-avatar" style="overflow:hidden;padding:0;"><img src="${savedAvatar}" style="width:100%;height:100%;object-fit:cover;" /></div>`
+      : `<div class="user-avatar">${userInitial}</div>`;
 
     headerActions.innerHTML = `
       <div class="user-profile-container">
         <button class="user-profile-btn" id="userProfileBtn" onclick="toggleUserMenu()">
-          <div class="user-avatar">${userInitial}</div>
+          ${avatarHtml}
           <div class="user-info">
             <span class="user-name">${userName}</span>
             <span class="user-email">${user.email}</span>
@@ -104,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </button>
         
         <div class="user-dropdown-menu" id="userDropdownMenu">
-          <a href="profile.html" class="dropdown-item" onclick="event.preventDefault()">
+          <a href="#" class="dropdown-item" onclick="openProfilePanel(); return false;">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 8C9.65685 8 11 6.65685 11 5C11 3.34315 9.65685 2 8 2C6.34315 2 5 3.34315 5 5C5 6.65685 6.34315 8 8 8ZM8 8C5.79086 8 4 9.79086 4 12C4 12.5523 4.44772 13 5 13H11C11.5523 13 12 12.5523 12 12C12 9.79086 10.2091 8 8 8Z" fill="currentColor"/>
             </svg>
@@ -124,6 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
     `;
+
+    injectProfilePanel();
 
     // Función para toggle del menu
     window.toggleUserMenu = function () {
@@ -415,3 +421,273 @@ document.addEventListener("DOMContentLoaded", () => {
       : "";
   };
 });
+
+// ──────────────── Profile Panel (drawer) ────────────────
+(function () {
+  const PP_COUNT = 8;
+  let ppPending = null;
+
+  function ppRandomSeed() {
+    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    return Array.from({ length: 10 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+  }
+
+  function ppBuildImg(src) {
+    return `<img src="${src}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;" />`;
+  }
+
+  function ppRenderCurrentAvatar() {
+    const el = document.getElementById("ppAvatarLarge");
+    if (!el) return;
+    const saved = localStorage.getItem("user_avatar");
+    const delBtn = document.getElementById("ppBtnDelete");
+    if (saved) {
+      el.innerHTML = ppBuildImg(saved);
+      el.style.padding = "0";
+      if (delBtn) delBtn.style.display = "flex";
+    } else {
+      const raw = localStorage.getItem("user_session");
+      const username = raw ? JSON.parse(raw).email.split("@")[0] : "?";
+      el.textContent = username.charAt(0).toUpperCase();
+      el.style.padding = "";
+      if (delBtn) delBtn.style.display = "none";
+    }
+  }
+
+  function ppRefreshHeader() {
+    const avatarEl = document.querySelector(".user-profile-btn .user-avatar");
+    if (!avatarEl) return;
+    const saved = localStorage.getItem("user_avatar");
+    const raw = localStorage.getItem("user_session");
+    const username = raw ? JSON.parse(raw).email.split("@")[0] : "?";
+    if (saved) {
+      avatarEl.innerHTML = `<img src="${saved}" style="width:100%;height:100%;object-fit:cover;" />`;
+      avatarEl.style.overflow = "hidden";
+      avatarEl.style.padding = "0";
+    } else {
+      avatarEl.innerHTML = username.charAt(0).toUpperCase();
+      avatarEl.style.overflow = "";
+      avatarEl.style.padding = "";
+    }
+  }
+
+  function ppSetupTabs() {
+    document.querySelectorAll(".pp-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".pp-tab").forEach((t) => t.classList.remove("active"));
+        document.querySelectorAll(".pp-tab-content").forEach((c) => c.classList.remove("active"));
+        tab.classList.add("active");
+        const content = document.getElementById("pp-tab-" + tab.dataset.tab);
+        if (content) content.classList.add("active");
+        if (tab.dataset.tab === "ai") {
+          const grid = document.getElementById("ppAiGrid");
+          if (grid && grid.children.length === 0) ppRenderAiAvatars();
+        }
+      });
+    });
+  }
+
+  function ppSetupUpload() {
+    const zone = document.getElementById("ppUploadZone");
+    const input = document.getElementById("ppPhotoInput");
+    if (!zone || !input) return;
+    zone.addEventListener("click", (e) => { if (e.target !== input) input.click(); });
+    zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.classList.add("drag-over"); });
+    zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      zone.classList.remove("drag-over");
+      const file = e.dataTransfer.files[0];
+      if (file) ppProcessFile(file);
+    });
+    input.addEventListener("change", (e) => { if (e.target.files[0]) ppProcessFile(e.target.files[0]); });
+  }
+
+  function ppProcessFile(file) {
+    if (!file.type.startsWith("image/")) { showToast("error", "Solo se permiten archivos de imagen"); return; }
+    if (file.size > 5 * 1024 * 1024) { showToast("error", "La imagen no puede superar los 5 MB"); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      ppPending = e.target.result;
+      const el = document.getElementById("ppAvatarLarge");
+      if (el) { el.innerHTML = ppBuildImg(ppPending); el.style.padding = "0"; }
+      const saveBtn = document.getElementById("ppBtnSave");
+      if (saveBtn) saveBtn.disabled = false;
+      showToast("success", "Foto lista — haz clic en Guardar cambios");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function ppRenderAiAvatars() {
+    const grid = document.getElementById("ppAiGrid");
+    if (!grid) return;
+    grid.innerHTML = Array.from({ length: PP_COUNT }).map(() => `<div class="pp-ai-item loading-pp"></div>`).join("");
+    Array.from({ length: PP_COUNT }, (_, i) => {
+      const seed = ppRandomSeed();
+      const url = `https://www.tapback.co/api/avatar/${seed}.webp`;
+      const img = new Image();
+      img.onload = () => {
+        const placeholders = grid.querySelectorAll(".pp-ai-item");
+        if (!placeholders[i]) return;
+        const item = document.createElement("div");
+        item.className = "pp-ai-item";
+        item.innerHTML = `<img src="${url}" alt="Memoji ${i + 1}" />`;
+        item.addEventListener("click", () => {
+          document.querySelectorAll(".pp-ai-item").forEach((el) => el.classList.remove("selected"));
+          item.classList.add("selected");
+          ppPending = url;
+          const el = document.getElementById("ppAvatarLarge");
+          if (el) { el.innerHTML = ppBuildImg(url); el.style.padding = "0"; }
+          const saveBtn = document.getElementById("ppBtnSave");
+          if (saveBtn) saveBtn.disabled = false;
+        });
+        placeholders[i].replaceWith(item);
+      };
+      img.onerror = () => {
+        const placeholders = grid.querySelectorAll(".pp-ai-item");
+        if (placeholders[i]) placeholders[i].classList.remove("loading-pp");
+      };
+      img.src = url;
+    });
+  }
+
+  window.injectProfilePanel = function () {
+    if (document.getElementById("profilePanelOverlay")) return;
+    const overlay = document.createElement("div");
+    overlay.id = "profilePanelOverlay";
+    overlay.className = "pp-overlay";
+    overlay.innerHTML = `
+      <div class="pp-panel" id="ppPanel">
+        <div class="pp-header">
+          <div>
+            <p class="pp-eyebrow">Cuenta</p>
+            <h2 class="pp-title">Mi Perfil</h2>
+          </div>
+          <button class="pp-close" id="ppCloseBtn"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="pp-body">
+          <div class="pp-avatar-section">
+            <div class="pp-avatar-wrap">
+              <div class="pp-avatar-large" id="ppAvatarLarge"></div>
+              <label class="pp-avatar-cam" for="ppPhotoInput" title="Subir foto">
+                <i class="ri-camera-line"></i>
+              </label>
+            </div>
+            <div class="pp-user-meta">
+              <h3 class="pp-username" id="ppUserName">Usuario</h3>
+              <p class="pp-useremail" id="ppUserEmail">-</p>
+              <button class="pp-btn-delete" id="ppBtnDelete" title="Eliminar foto de perfil" style="display:none">
+                <i class="ri-delete-bin-6-line"></i>
+                <span>Eliminar foto</span>
+              </button>
+            </div>
+          </div>
+          <div class="pp-tabs">
+            <button class="pp-tab active" data-tab="upload"><i class="ri-upload-cloud-line"></i> Subir foto</button>
+            <button class="pp-tab" data-tab="ai"><i class="ri-sparkling-line"></i> Memojis IA</button>
+          </div>
+          <div class="pp-tab-content active" id="pp-tab-upload">
+            <div class="pp-upload-zone" id="ppUploadZone">
+              <input type="file" id="ppPhotoInput" accept="image/*" hidden />
+              <i class="ri-image-add-line pp-upload-icon"></i>
+              <p class="pp-upload-title">Arrastra tu foto aquí</p>
+              <p class="pp-upload-subtitle">o haz clic para seleccionar</p>
+              <p class="pp-upload-hint">PNG, JPG, GIF · máx. 5 MB</p>
+            </div>
+          </div>
+          <div class="pp-tab-content" id="pp-tab-ai">
+            <div class="pp-ai-header">
+              <p class="pp-ai-subtitle">Memojis únicos generados por IA.</p>
+              <button class="pp-btn-regen" id="ppBtnRegen"><i class="ri-refresh-line"></i> Nuevos</button>
+            </div>
+            <div class="pp-ai-grid" id="ppAiGrid"></div>
+          </div>
+          <div class="pp-actions">
+            <button class="pp-btn-save" id="ppBtnSave" disabled>
+              <i class="ri-save-line"></i> Guardar cambios
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    document.getElementById("ppCloseBtn").addEventListener("click", window.closeProfilePanel);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) window.closeProfilePanel(); });
+    document.getElementById("ppBtnSave").addEventListener("click", () => {
+      if (!ppPending) return;
+      localStorage.setItem("user_avatar", ppPending);
+      ppPending = null;
+      const saveBtn = document.getElementById("ppBtnSave");
+      if (saveBtn) saveBtn.disabled = true;
+      ppRenderCurrentAvatar();
+      ppRefreshHeader();
+      showToast("success", "¡Foto de perfil actualizada!");
+    });
+    document.getElementById("ppBtnDelete").addEventListener("click", () => {
+      localStorage.removeItem("user_avatar");
+      ppPending = null;
+      ppRenderCurrentAvatar();
+      ppRefreshHeader();
+      const saveBtn = document.getElementById("ppBtnSave");
+      if (saveBtn) saveBtn.disabled = true;
+      showToast("success", "Foto de perfil eliminada");
+    });
+    document.getElementById("ppBtnRegen").addEventListener("click", () => {
+      const btn = document.getElementById("ppBtnRegen");
+      btn.classList.add("loading");
+      ppRenderAiAvatars();
+      setTimeout(() => btn.classList.remove("loading"), 700);
+    });
+
+    ppSetupTabs();
+    ppSetupUpload();
+  };
+
+  window.openProfilePanel = function () {
+    const overlay = document.getElementById("profilePanelOverlay");
+    if (!overlay) return;
+    ppPending = null;
+
+    const raw = localStorage.getItem("user_session");
+    if (raw) {
+      const session = JSON.parse(raw);
+      const username = session.email.split("@")[0] || "Usuario";
+      const nameEl = document.getElementById("ppUserName");
+      const emailEl = document.getElementById("ppUserEmail");
+      if (nameEl) nameEl.textContent = username;
+      if (emailEl) emailEl.textContent = session.email;
+    }
+
+    ppRenderCurrentAvatar();
+
+    const saveBtn = document.getElementById("ppBtnSave");
+    if (saveBtn) saveBtn.disabled = true;
+
+    document.querySelectorAll(".pp-tab").forEach((t) => t.classList.remove("active"));
+    document.querySelectorAll(".pp-tab-content").forEach((c) => c.classList.remove("active"));
+    const uploadTab = document.querySelector(".pp-tab[data-tab='upload']");
+    const uploadContent = document.getElementById("pp-tab-upload");
+    if (uploadTab) uploadTab.classList.add("active");
+    if (uploadContent) uploadContent.classList.add("active");
+
+    // Reset AI grid so it reloads fresh on next tab switch
+    const grid = document.getElementById("ppAiGrid");
+    if (grid) grid.innerHTML = "";
+
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+
+    // Close dropdown if open
+    const menu = document.getElementById("userDropdownMenu");
+    const btn = document.getElementById("userProfileBtn");
+    if (menu) menu.classList.remove("active");
+    if (btn) btn.classList.remove("active");
+  };
+
+  window.closeProfilePanel = function () {
+    const overlay = document.getElementById("profilePanelOverlay");
+    if (overlay) overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  };
+})();

@@ -68,9 +68,18 @@ function loadSidebarUser() {
     const nameEl    = document.getElementById("sidebarUserName");
     const emailEl   = document.getElementById("sidebarUserEmail");
     const logoutBtn = document.getElementById("sidebarLogout");
-    if (avatar)  avatar.textContent  = initial;
     if (nameEl)  nameEl.textContent  = username;
     if (emailEl) emailEl.textContent = email;
+    if (avatar) {
+      const savedAvatar = localStorage.getItem("user_avatar");
+      if (savedAvatar) {
+        avatar.innerHTML = `<img src="${savedAvatar}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`;
+        avatar.style.overflow = "hidden";
+        avatar.style.padding  = "0";
+      } else {
+        avatar.textContent = initial;
+      }
+    }
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("user_session");
