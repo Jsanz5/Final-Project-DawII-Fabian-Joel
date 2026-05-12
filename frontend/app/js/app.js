@@ -351,59 +351,17 @@ document.addEventListener("DOMContentLoaded", () => {
   window.handleSearch = function () {
     const inp = document.getElementById("heroInput");
     if (inp && inp.value.trim() !== "") {
-      // Comprobamos si el usuario tiene sesión iniciada
       const isLogged = localStorage.getItem("user_session");
-
       if (isLogged) {
-        // El usuario está logueado, iniciar la auditoría SEO
-        const userSession = JSON.parse(isLogged);
-        const url = inp.value.trim();
-
-        // Llamar al endpoint de auditoría (tu compañero completará la lógica Python)
-        initiateAudit(url, userSession.id);
+        localStorage.setItem("pending_audit_url", inp.value.trim());
+        window.location.href = "dashboard.html";
       } else {
-        // Guardar URL para auditar después del registro
         localStorage.setItem("pending_seo_url", inp.value.trim());
         window.location.href = "register.html";
       }
     } else {
-      if (inp) {
-        inp.focus();
-      }
+      if (inp) inp.focus();
     }
-  };
-
-  // Función auxiliar para iniciar la auditoría
-  window.initiateAudit = function (url, userId) {
-    const API_BASE_URL = "../../backend/api";
-
-    fetch(`${API_BASE_URL}/seo/audit.php`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: userId,
-        url: url,
-      }),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.status === "success") {
-          showToast("success", `Auditoría iniciada para: ${url}`);
-          // Redirigir a página de resultados
-          setTimeout(() => {
-            window.location.href = `audit-results.html?id=${result.audit_id}`;
-          }, 1500);
-        } else {
-          showToast("error", `Error: ${result.message}`);
-        }
-      })
-      .catch((error) => {
-        // DEBUG: Error al iniciar auditoría - ver consola para detalles
-        console.error("[DEBUG] Error al iniciar auditoría:", error);
-        alert("Error al iniciar la auditoría");
-      });
   };
 
   // esta función es para el menú lateral en mobile, simplemente alterna la clase active y bloquea el scroll del body cuando el menú está abierto

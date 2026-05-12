@@ -719,4 +719,15 @@ document.addEventListener("DOMContentLoaded", () => {
   bindCopyButtons();
   bindContentExport();
   loadHistory();
+
+  const pendingUrl = localStorage.getItem("pending_audit_url");
+  if (pendingUrl) {
+    localStorage.removeItem("pending_audit_url");
+    setActivePanel("audit");
+    const input = document.getElementById("auditUrlInput");
+    if (input) {
+      input.value = pendingUrl;
+      setTimeout(() => document.getElementById("auditSubmitBtn")?.click(), 400);
+    }
+  }
 });
