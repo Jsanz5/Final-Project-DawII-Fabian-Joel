@@ -424,46 +424,29 @@ function bindContentExport() {
 
   btn.addEventListener("click", async () => {
     if (!window.jspdf || !window.html2canvas) {
-      showToast("error","Librerías PDF no disponibles aún, espera un momento"); return;
+      showToast("error", "Librerías PDF no disponibles aún, espera un momento"); return;
     }
     const originalHtml = btn.innerHTML;
     btn.innerHTML = '<i class="ri-loader-4-line"></i> Generando...';
     btn.disabled  = true;
 
     try {
-      const getText = (id) => document.getElementById(id)?.innerText.trim() || "N/A";
+      const getText  = (id) => document.getElementById(id)?.innerText.trim() || "N/A";
       const metaTitle = getText("resMetaTitle");
       const metaDesc  = getText("resMetaDesc");
       const h1        = getText("resH1");
       const bodyText  = getText("resBody");
       const cta       = getText("resCta");
-      const keywords  = [...document.querySelectorAll("#resKeywords li")]
-                          .map(li => li.innerText.trim()).filter(Boolean);
+      const keywords  = [...document.querySelectorAll("#resKeywords li")].map(li => li.innerText.trim()).filter(Boolean);
       const topic     = document.getElementById("contentTopic")?.value.trim() || "";
-      const type      = document.getElementById("contentType")?.value          || "";
-      const now       = new Date().toLocaleDateString("es-ES",
-                          { year:"numeric", month:"long", day:"numeric" });
+      const type      = document.getElementById("contentType")?.value || "";
+      const now       = new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
       const bodyHtml  = bodyTextToHtml(bodyText);
 
       const container = document.createElement("div");
-      container.style.cssText = [
-        "position:fixed","left:-9999px","top:0",
-        "width:794px","background:white",
-        "font-family:Arial,Helvetica,sans-serif",
-        "font-size:12px","line-height:1.4",
-        "color:#111827","z-index:-1",
-      ].join(";");
-
+      container.style.cssText = "position:fixed;left:-9999px;top:0;width:794px;background:white;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#111827;z-index:-1";
       container.innerHTML = `<div style="padding:32px 36px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #f3e8ff">
-          <div style="font-size:20px;font-weight:800;color:#7c3aed">Echo<span style="color:#a855f7">SEO</span></div>
-          <div style="text-align:right;font-size:10px;color:#6b7280;line-height:1.6">
-            <div style="font-weight:700;color:#374151;font-size:11px">Reporte de Contenido SEO</div>
-            <div>${now}</div>
-            ${topic ? `<div>Tema: ${topic}</div>` : ""}
-            ${type  ? `<div>Tipo: ${type.charAt(0).toUpperCase()+type.slice(1)}</div>` : ""}
-          </div>
-        </div>
+        ${pdfHeader("Reporte de Contenido SEO", `${topic ? "Tema: " + topic : ""}${type ? " · " + type.charAt(0).toUpperCase() + type.slice(1) : ""}`, now)}
         <div style="background:#f5f3ff;border-radius:10px;padding:18px 24px 22px;margin-bottom:16px;border:1px solid #ddd6fe">
           <div style="font-size:17px;font-weight:700;color:#1e1b4b;line-height:1.3;margin-bottom:6px">
             ${metaTitle !== "N/A" ? metaTitle : (topic || "Contenido SEO")}
@@ -471,78 +454,37 @@ function bindContentExport() {
           ${metaDesc !== "N/A" ? `<div style="font-size:11px;color:#4c1d95;line-height:1.55">${metaDesc}</div>` : ""}
         </div>
         <div style="display:flex;gap:12px;margin-bottom:12px">
-          <div style="flex:1;${blockStyle()}">${blockLabel("#3b82f6","Meta Título")}${blockContent(metaTitle)}</div>
-          <div style="flex:1;${blockStyle()}">${blockLabel("#f59e0b","Meta Descripción")}${blockContent(metaDesc)}</div>
+          <div style="flex:1;${blockStyle()}">${blockLabel("#3b82f6", "Meta Título")}${blockContent(metaTitle)}</div>
+          <div style="flex:1;${blockStyle()}">${blockLabel("#f59e0b", "Meta Descripción")}${blockContent(metaDesc)}</div>
         </div>
         <div style="display:flex;gap:12px;margin-bottom:12px">
-          <div style="flex:1;${blockStyle()}">${blockLabel("#10b981","H1 Recomendado")}${blockContent(h1)}</div>
-          <div style="flex:1;${blockStyle()}">${blockLabel("#ec4899","Call to Action")}${blockContent(cta)}</div>
+          <div style="flex:1;${blockStyle()}">${blockLabel("#10b981", "H1 Recomendado")}${blockContent(h1)}</div>
+          <div style="flex:1;${blockStyle()}">${blockLabel("#ec4899", "Call to Action")}${blockContent(cta)}</div>
         </div>
         ${keywords.length ? `
         <div style="margin-bottom:14px">
-          ${blockLabel("#06b6d4","Keywords Principales")}
+          ${blockLabel("#06b6d4", "Keywords Principales")}
           <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">
-            ${keywords.map(kw=>`<span style="background:#e0f2fe;color:#0369a1;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600">${kw}</span>`).join("")}
+            ${keywords.map(kw => `<span style="background:#e0f2fe;color:#0369a1;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600">${kw}</span>`).join("")}
           </div>
         </div>` : ""}
         <div style="height:1px;background:#e5e7eb;margin:14px 0 16px"></div>
         <div style="margin-bottom:16px">
-          ${blockLabel("#8b5cf6","Cuerpo de Contenido")}
+          ${blockLabel("#8b5cf6", "Cuerpo de Contenido")}
           <div style="background:#f9fafb;border-radius:7px;padding:14px 16px;border:1px solid #e5e7eb;margin-top:6px;overflow-wrap:break-word;word-break:break-word">
             ${bodyHtml}
           </div>
         </div>
-        <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center">
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb">
           <span style="font-size:13px;color:#7c3aed;font-weight:700">EchoSEO</span>
         </div>
       </div>`;
-
       document.body.appendChild(container);
-
-      const pxPerMm = 794 / 210;
-      const pageHpx = 297 * pxPerMm;
-
-      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-      const breakStarts = calcPageBreaks(container, pageHpx);
-      const totalLogH   = container.scrollHeight;
-
-      const SCALE  = 3;
-      const canvas = await window.html2canvas(container, {
-        scale: SCALE, useCORS: true,
-        backgroundColor: "#ffffff", logging: false, width: 794,
-      });
-
-      document.body.removeChild(container);
-
-      const { jsPDF } = window.jspdf;
-      const pdf  = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
-      const pageW = pdf.internal.pageSize.getWidth();
-
-      for (let i = 0; i < breakStarts.length; i++) {
-        if (i > 0) pdf.addPage();
-        const startY = breakStarts[i];
-        const endY   = (i + 1 < breakStarts.length) ? breakStarts[i + 1] : totalLogH;
-        const sliceH = endY - startY;
-        const sliceCanvas  = document.createElement("canvas");
-        sliceCanvas.width  = canvas.width;
-        sliceCanvas.height = Math.max(1, Math.round(sliceH * SCALE));
-        const sliceCtx     = sliceCanvas.getContext("2d");
-        sliceCtx.drawImage(
-          canvas,
-          0, Math.round(startY * SCALE), canvas.width, Math.round(sliceH * SCALE),
-          0, 0,                          canvas.width, Math.round(sliceH * SCALE),
-        );
-        pdf.addImage(sliceCanvas.toDataURL("image/jpeg", 0.92), "JPEG", 0, 0, pageW, sliceH / pxPerMm);
-      }
-
-      pdf.save("reporte-seo-echoseo.pdf");
-      showToast("success","PDF descargado correctamente");
-
+      await runPdfExport(container, "reporte-seo-echoseo.pdf", btn, originalHtml);
+      showToast("success", "PDF descargado correctamente");
     } catch (err) {
       console.error("PDF export error:", err);
-      showToast("error","No se pudo generar el PDF");
-    } finally {
+      showToast("error", "No se pudo generar el PDF");
       btn.innerHTML = originalHtml;
       btn.disabled  = false;
     }
@@ -583,8 +525,13 @@ function renderAnalyzeResults(data) {
     <div class="analyze-results-wrap">
 
       <div class="analyze-results-header">
-        <p class="panel-eyebrow">Análisis Completado</p>
-        <h2>Resultados de Competencia</h2>
+        <div>
+          <p class="panel-eyebrow">Análisis Completado</p>
+          <h2>Resultados de Competencia</h2>
+        </div>
+        <button class="btn-export" id="analyzeExportBtn" type="button">
+          <i class="ri-download-line"></i> Exportar
+        </button>
       </div>
 
       <div class="results-islands">
@@ -643,7 +590,205 @@ function renderAnalyzeResults(data) {
   resultsEl.classList.remove("is-hidden");
   animateResultIslands(resultsEl);
   bindCopyButtons();
+  bindAnalyzeExport();
 }
+async function runPdfExport(container, filename, btn, originalHtml) {
+  const pxPerMm = 794 / 210;
+  const pageHpx = 297 * pxPerMm;
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  const breakStarts = calcPageBreaks(container, pageHpx);
+  const totalLogH   = container.scrollHeight;
+  const SCALE  = 3;
+  const canvas = await window.html2canvas(container, {
+    scale: SCALE, useCORS: true, backgroundColor: "#ffffff", logging: false, width: 794,
+  });
+  document.body.removeChild(container);
+  const { jsPDF } = window.jspdf;
+  const pdf   = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const pageW = pdf.internal.pageSize.getWidth();
+  for (let i = 0; i < breakStarts.length; i++) {
+    if (i > 0) pdf.addPage();
+    const startY = breakStarts[i];
+    const endY   = (i + 1 < breakStarts.length) ? breakStarts[i + 1] : totalLogH;
+    const sliceH = endY - startY;
+    const sliceCanvas  = document.createElement("canvas");
+    sliceCanvas.width  = canvas.width;
+    sliceCanvas.height = Math.max(1, Math.round(sliceH * SCALE));
+    sliceCanvas.getContext("2d").drawImage(
+      canvas, 0, Math.round(startY * SCALE), canvas.width, Math.round(sliceH * SCALE),
+      0, 0, canvas.width, Math.round(sliceH * SCALE),
+    );
+    pdf.addImage(sliceCanvas.toDataURL("image/jpeg", 0.92), "JPEG", 0, 0, pageW, sliceH / pxPerMm);
+  }
+  pdf.save(filename);
+  btn.innerHTML = originalHtml;
+  btn.disabled  = false;
+}
+
+function pdfHeader(title, subtitle, now) {
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #f3e8ff">
+      <div style="font-size:20px;font-weight:800;color:#7c3aed">Echo<span style="color:#a855f7">SEO</span></div>
+      <div style="text-align:right;font-size:10px;color:#6b7280;line-height:1.6">
+        <div style="font-weight:700;color:#374151;font-size:11px">${title}</div>
+        <div>${now}</div>
+        ${subtitle ? `<div>${subtitle}</div>` : ""}
+      </div>
+    </div>`;
+}
+
+function pdfSection(accentColor, label, content) {
+  return `
+    <div style="background:#f9fafb;border-radius:8px;padding:14px;border:1px solid #e5e7eb;margin-bottom:12px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${accentColor};margin-bottom:8px">${label}</div>
+      <div style="font-size:11px;color:#374151;line-height:1.6">${content}</div>
+    </div>`;
+}
+
+function pdfListHtml(items) {
+  return items.length
+    ? items.map(i => `<li style="padding:3px 0;border-bottom:1px solid #f3f4f6;font-size:11px;color:#374151">${i}</li>`).join("")
+    : `<li style="font-size:11px;color:#9ca3af">Sin datos</li>`;
+}
+
+function bindAuditExport() {
+  const btn = document.getElementById("auditExportBtn");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    if (!window.jspdf || !window.html2canvas) {
+      showToast("error", "Librerías PDF no disponibles aún, espera un momento"); return;
+    }
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="ri-loader-4-line"></i> Generando...';
+    btn.disabled  = true;
+    try {
+      const getList = (id) => [...document.querySelectorAll(`#${id} li`)].map(li => li.innerText.trim()).filter(Boolean);
+      const getText = (id) => document.getElementById(id)?.innerText.trim() || "N/A";
+      const url      = document.getElementById("auditUrlInput")?.value || "";
+      const score    = getText("auditScore");
+      const errors   = getList("auditErrors");
+      const warnings = getList("auditWarnings");
+      const good     = getList("auditGood");
+      const keywords = getList("auditKeywords");
+      const content  = getText("auditContent");
+      const now      = new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
+
+      const container = document.createElement("div");
+      container.style.cssText = "position:fixed;left:-9999px;top:0;width:794px;background:white;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#111827;z-index:-1";
+      container.innerHTML = `<div style="padding:32px 36px">
+        ${pdfHeader("Reporte de Auditoría SEO", url, now)}
+        <div style="background:#f5f3ff;border-radius:10px;padding:18px 24px;margin-bottom:16px;border:1px solid #ddd6fe;display:flex;align-items:center;gap:20px">
+          <div style="text-align:center;min-width:70px">
+            <div style="font-size:36px;font-weight:800;color:#7c3aed">${score}</div>
+            <div style="font-size:10px;color:#6b7280;margin-top:2px">GLOBAL SCORE</div>
+          </div>
+          <div style="flex:1;font-size:11px;color:#4c1d95">${url ? `<strong>URL:</strong> ${url}` : "Auditoría SEO completada"}</div>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          <div style="flex:1;background:#fff1f2;border-radius:8px;padding:14px;border:1px solid #fecdd3">
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#e11d48;margin-bottom:8px">Errores (${errors.length})</div>
+            <ul style="margin:0;padding-left:16px">${pdfListHtml(errors)}</ul>
+          </div>
+          <div style="flex:1;background:#fffbeb;border-radius:8px;padding:14px;border:1px solid #fde68a">
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#d97706;margin-bottom:8px">Advertencias (${warnings.length})</div>
+            <ul style="margin:0;padding-left:16px">${pdfListHtml(warnings)}</ul>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          <div style="flex:1;background:#f0fdf4;border-radius:8px;padding:14px;border:1px solid #bbf7d0">
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#16a34a;margin-bottom:8px">Buenas Prácticas (${good.length})</div>
+            <ul style="margin:0;padding-left:16px">${pdfListHtml(good)}</ul>
+          </div>
+          <div style="flex:1;background:#f0f9ff;border-radius:8px;padding:14px;border:1px solid #bae6fd">
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#0369a1;margin-bottom:8px">Keywords Sugeridas</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px">${keywords.length ? keywords.map(k=>`<span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:100px;font-size:10px">${k}</span>`).join("") : `<span style="font-size:11px;color:#9ca3af">Sin datos</span>`}</div>
+          </div>
+        </div>
+        ${content && content !== "N/A" && content !== "Sin datos aun" ? pdfSection("#8b5cf6", "Sugerencia de Contenido IA", content) : ""}
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb">
+          <span style="font-size:13px;color:#7c3aed;font-weight:700">EchoSEO</span>
+        </div>
+      </div>`;
+      document.body.appendChild(container);
+      await runPdfExport(container, "auditoria-seo-echoseo.pdf", btn, originalHtml);
+      showToast("success", "PDF descargado correctamente");
+    } catch (err) {
+      console.error("Audit PDF export error:", err);
+      showToast("error", "No se pudo generar el PDF");
+      btn.innerHTML = originalHtml;
+      btn.disabled  = false;
+    }
+  });
+}
+
+function bindAnalyzeExport() {
+  const btn = document.getElementById("analyzeExportBtn");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    if (!window.jspdf || !window.html2canvas) {
+      showToast("error", "Librerías PDF no disponibles aún, espera un momento"); return;
+    }
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="ri-loader-4-line"></i> Generando...';
+    btn.disabled  = true;
+    try {
+      const getText  = (id) => document.getElementById(id)?.innerText.trim() || "N/A";
+      const getList  = (id) => [...document.querySelectorAll(`#${id} li`)].map(li => li.innerText.trim()).filter(Boolean);
+      const keyword   = document.getElementById("analyzeKeyword")?.value || "";
+      const location  = document.getElementById("analyzeLocation")?.value || "";
+      const intent    = getText("resSearchIntent");
+      const h1        = getText("resAnalyzeH1");
+      const gap       = getText("resContentGap");
+      const h2List    = getList("resAnalyzeH2");
+      const competitors = [...document.querySelectorAll(".analyze-competitor-card")].map(card => ({
+        rank:    card.querySelector(".analyze-rank")?.innerText.trim()            || "",
+        title:   card.querySelector(".analyze-competitor-title")?.innerText.trim() || "Sin título",
+        url:     card.querySelector(".analyze-competitor-url")?.innerText.trim()   || "",
+        snippet: card.querySelector(".analyze-competitor-snippet")?.innerText.trim() || "",
+      }));
+      const now = new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
+
+      const container = document.createElement("div");
+      container.style.cssText = "position:fixed;left:-9999px;top:0;width:794px;background:white;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#111827;z-index:-1";
+      container.innerHTML = `<div style="padding:32px 36px">
+        ${pdfHeader("Reporte de Análisis de Competencia", keyword ? `Keyword: ${keyword}${location ? " · " + location : ""}` : "", now)}
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          ${pdfSection("#6366f1", "Intención de Búsqueda", intent)}
+          ${pdfSection("#10b981", "H1 Sugerido", h1)}
+        </div>
+        ${pdfSection("#f59e0b", "Content Gap", gap)}
+        <div style="background:#f9fafb;border-radius:8px;padding:14px;border:1px solid #e5e7eb;margin-bottom:16px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8b5cf6;margin-bottom:8px">Estructura H2 Recomendada (${h2List.length} secciones)</div>
+          <ol style="margin:0;padding-left:18px">${h2List.length ? h2List.map(h=>`<li style="font-size:11px;color:#374151;padding:2px 0">${h}</li>`).join("") : `<li style="font-size:11px;color:#9ca3af">Sin datos</li>`}</ol>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#374151;margin-bottom:10px">Top Competidores (${competitors.length})</div>
+          ${competitors.map(c=>`
+            <div style="background:#f9fafb;border-radius:8px;padding:12px;border:1px solid #e5e7eb;margin-bottom:8px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span style="background:#7c3aed;color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px">${c.rank}</span>
+                <span style="font-size:11px;font-weight:700;color:#1f2937">${c.title}</span>
+              </div>
+              <div style="font-size:10px;color:#6366f1;margin-bottom:4px">${c.url}</div>
+              ${c.snippet ? `<div style="font-size:10px;color:#6b7280">${c.snippet}</div>` : ""}
+            </div>`).join("")}
+        </div>
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb">
+          <span style="font-size:13px;color:#7c3aed;font-weight:700">EchoSEO</span>
+        </div>
+      </div>`;
+      document.body.appendChild(container);
+      await runPdfExport(container, "competencia-seo-echoseo.pdf", btn, originalHtml);
+      showToast("success", "PDF descargado correctamente");
+    } catch (err) {
+      console.error("Analyze PDF export error:", err);
+      showToast("error", "No se pudo generar el PDF");
+      btn.innerHTML = originalHtml;
+      btn.disabled  = false;
+    }
+  });
+}
+
 function bindAnalyzeForm() {
   const form      = document.getElementById("analyzeForm");
   const submitBtn = document.getElementById("analyzeSubmitBtn");
@@ -718,6 +863,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindAnalyzeForm();
   bindCopyButtons();
   bindContentExport();
+  bindAuditExport();
   loadHistory();
 
   const pendingUrl = localStorage.getItem("pending_audit_url");

@@ -910,26 +910,28 @@
 }
 
 .content-form-action .btn-purple.is-loading {
-  background: linear-gradient(90deg, #e8b4ff 0%, #f1ccff 30%, #c9a0f0 50%, #f1ccff 70%, #e8b4ff 100%);
-  background-size: 200% auto;
-  animation: btnShimmer 1.4s linear infinite;
+  background: linear-gradient(90deg, #a855f7 0%, #818cf8 35%, #e879f9 65%, #a855f7 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: analyzeShimmer 2.5s linear infinite;
+  box-shadow: none;
   cursor: wait;
-  opacity: 0.9;
+  opacity: 1;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-}
-
-@keyframes sparkPulse {
-  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
-  33%       { transform: scale(1.35) rotate(15deg); opacity: 0.85; }
-  66%       { transform: scale(0.9) rotate(-10deg); opacity: 1; }
+  gap: 0.4rem;
 }
 
 .content-form-action .btn-purple.is-loading .ri-sparkling-2-line {
-  font-size: 1.15rem;
-  animation: sparkPulse 1.4s ease-in-out infinite;
+  font-size: 0.68rem;
+  animation: none;
 }
 
 .btn-purple:hover {
