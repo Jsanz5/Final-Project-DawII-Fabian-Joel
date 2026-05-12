@@ -458,17 +458,20 @@ nav a:hover::before {
 }
 .search-box {
   background: white;
-  border-radius: 14px;
+  border-radius: 16px;
   box-shadow:
     0 4px 32px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  padding: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .search-input-row {
   display: flex;
   align-items: center;
-  padding: 8px 14px;
+  padding: 10px 16px;
   gap: 8px;
 }
 .search-input {
@@ -497,7 +500,7 @@ nav a:hover::before {
 .search-divider {
   height: 1px;
   background: var(--border);
-  margin: 0 6px;
+  margin: 0;
 }
 .btn-search-full {
   width: 100%;
@@ -531,6 +534,7 @@ nav a:hover::before {
   position: relative;
   width: 100%;
   height: auto;
+  margin-top: 70px;
   margin-bottom: 96px;
   max-width: 1140px;
   animation: slideUp 0.8s 0.35s ease both;
