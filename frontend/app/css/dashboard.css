@@ -37,23 +37,35 @@
 }
 
 .sidebar-brand .logo {
-  width: 100%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: 9px;
+  background: var(--color-ink-text);
+  border-radius: 100px;
+  padding: 10px 18px;
+  color: whitesmoke;
+}
+
+.sidebar-brand .logo-name {
+  color: whitesmoke;
+}
+
+.dashboard-sidebar.is-collapsed .logo-name {
+  display: none;
+}
+
+.dashboard-sidebar.is-collapsed .sidebar-brand {
+  display: flex;
   justify-content: center;
+  padding-top: var(--spacing-16);
 }
 
-.dashboard-sidebar .logo-mark,
-.dashboard-sidebar .header-logo-img {
-  width: 88px;
-  height: 88px;
-  margin: 0;
-}
-
-.dashboard-sidebar.is-collapsed .logo-mark,
-.dashboard-sidebar.is-collapsed .header-logo-img {
+.dashboard-sidebar.is-collapsed .sidebar-brand .logo {
+  padding: 12px;
   width: 44px;
   height: 44px;
+  justify-content: center;
+  border-radius: 50%;
 }
 
 .sidebar-brand .brand-mark {
