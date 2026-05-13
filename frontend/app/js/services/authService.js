@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
               // Nota: Tu compañero implementará la página de resultados
               alert(`¡Bienvenido! Iniciando auditoría para: ${pendingUrl}`);
               localStorage.removeItem("pending_seo_url");
-              // window.location.href = `audit-results.html?url=${encodeURIComponent(pendingUrl)}`;
             } else {
               window.location.href = "dashboard.html";
             }
