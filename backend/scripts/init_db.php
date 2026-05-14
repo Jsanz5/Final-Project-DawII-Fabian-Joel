@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS audits (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     url TEXT NOT NULL,
-    status TEXT DEFAULT 'pending',
     seo_score INTEGER,
     report_data TEXT, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

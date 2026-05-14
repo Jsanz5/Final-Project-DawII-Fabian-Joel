@@ -13,7 +13,10 @@ function bindSidebar() {
   document.querySelectorAll(".sidebar-item").forEach((btn) => {
     btn.addEventListener("click", () => {
       const panelId = btn.dataset.panel;
-      if (panelId) setActivePanel(panelId);
+      if (panelId) {
+        setActivePanel(panelId);
+        if (panelId === "history") loadHistory();
+      }
     });
   });
 }
@@ -119,10 +122,12 @@ function updateResultsEmpty() {
   set("auditContent",  "Sin datos aun",      true);
 }
 
-function renderList(target, items) {
+function renderList(target, items, limit = 5) {
   if (!target) return;
-  if (!items || items.length === 0) { target.innerHTML = "<li>Sin datos</li>"; return; }
-  target.innerHTML = items.slice(0, 5).map((item) => `<li>${item}</li>`).join("");
+  const list = Array.isArray(items) ? items : [];
+  if (list.length === 0) { target.innerHTML = "<li>Sin datos</li>"; return; }
+  const limited = (limit === null || limit === undefined) ? list : list.slice(0, limit);
+  target.innerHTML = limited.map((item) => `<li>${item}</li>`).join("");
 }
 
 function renderAuditResults(payload) {
@@ -140,6 +145,148 @@ function renderAuditResults(payload) {
   renderList(get("auditKeywords"), payload.seo_analysis.keyword_suggestions);
   if (content)     content.textContent = payload.seo_analysis.content_generation || "Sin datos";
   if (resultsWrap) resultsWrap.classList.remove("is-hidden");
+}
+
+let historyCache = [];
+let historySelected = null;
+let historySelectedReport = null;
+const HISTORY_PAGE_SIZE = 5;
+let historyOffset = 0;
+let historyHasMore = false;
+let historyLoading = false;
+
+function parseReportData(raw) {
+  if (!raw) return null;
+  if (typeof raw === "string") {
+    try { return JSON.parse(raw); } catch (err) { console.error("Report parse error:", err); return null; }
+  }
+  return raw;
+}
+
+function formatHistoryDate(value) {
+  if (!value) return "Sin fecha";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString("es-ES", {
+    year: "numeric", month: "short", day: "numeric",
+  });
+}
+
+function simplifyHistoryUrl(value) {
+  if (!value) return "URL no disponible";
+  try {
+    const url = new URL(value);
+    const path = url.pathname || "/";
+    return `${url.hostname}${path}`;
+  } catch {
+    return value.replace(/^https?:\/\//i, "");
+  }
+}
+
+function showHistoryList() {
+  const container = document.getElementById("historyContainer");
+  const detail    = document.getElementById("historyDetail");
+  const loadMore  = document.getElementById("historyLoadMoreWrap");
+  if (container) container.style.display = "";
+  if (detail) detail.style.display = "none";
+  if (loadMore) loadMore.style.display = historyHasMore ? "flex" : "none";
+}
+
+function showHistoryDetail() {
+  const container = document.getElementById("historyContainer");
+  const detail    = document.getElementById("historyDetail");
+  const loadMore  = document.getElementById("historyLoadMoreWrap");
+  if (container) container.style.display = "none";
+  if (detail) {
+    detail.style.display = "";
+    detail.scrollTop = 0;
+  }
+  if (loadMore) loadMore.style.display = "none";
+  window.scrollTo(0, 0);
+}
+
+function renderHistoryDetail(audit) {
+  historySelected = audit || null;
+  historySelectedReport = parseReportData(audit?.report_data);
+  const report   = historySelectedReport || {};
+  const analysis = report.seo_analysis || {};
+  const get      = (id) => document.getElementById(id);
+
+  const statusEl = get("historyAuditStatus");
+  const metaEl   = get("historyAuditMeta");
+  const scoreEl  = get("historyAuditScore");
+  const content  = get("historyAuditContent");
+
+  if (statusEl) statusEl.textContent = report.status || "Auditoría completada";
+  if (metaEl) {
+    const urlLabel  = audit?.url ? `URL: ${simplifyHistoryUrl(audit.url)}` : "URL no disponible";
+    const dateLabel = audit?.created_at ? `Fecha: ${formatHistoryDate(audit.created_at)}` : "Fecha no disponible";
+    metaEl.textContent = `${urlLabel} · ${dateLabel}`;
+  }
+  if (scoreEl) scoreEl.textContent = analysis.global_score ?? "--";
+
+  renderList(get("historyAuditErrors"), analysis.errors, null);
+  renderList(get("historyAuditWarnings"), analysis.warnings, null);
+  renderList(get("historyAuditGood"), analysis.good_practices, null);
+  renderList(get("historyAuditKeywords"), analysis.keyword_suggestions, null);
+  if (content) content.textContent = analysis.content_generation || "Sin datos";
+
+  const detailCard = get("historyDetail");
+  if (detailCard) animateResultIslands(detailCard);
+  showHistoryDetail();
+}
+
+function renderHistoryList(items, { append = false } = {}) {
+  const container = document.getElementById("historyContainer");
+  if (!container) return;
+  if (!items || items.length === 0) {
+    if (!append) {
+      container.innerHTML = `
+        <div class="panel-empty">
+          <h3>Sin auditorías guardadas</h3>
+          <p>Cuando realices auditorías aparecerán aquí.</p>
+        </div>`;
+    }
+    return;
+  }
+  const html = items.map((item) => {
+    const dateLabel = formatHistoryDate(item.created_at);
+    const urlLabel  = simplifyHistoryUrl(item.url);
+    const disabled  = !item.report_data;
+    const scoreLabel = (item.seo_score !== null && item.seo_score !== undefined)
+      ? ` · Score: ${item.seo_score}`
+      : "";
+    return `
+      <div class="history-card" data-history-id="${item.id}">
+        <div class="history-info">
+          <h3>${urlLabel}</h3>
+          <p class="history-meta-line">${dateLabel}${scoreLabel}</p>
+        </div>
+        <button class="history-view-btn" type="button" data-history-id="${item.id}" aria-label="Ver" ${disabled ? "disabled" : ""}>
+          <i class="ri-eye-line" aria-hidden="true"></i>
+        </button>
+      </div>`;
+  }).join("");
+
+  if (append) {
+    container.insertAdjacentHTML("beforeend", html);
+  } else {
+    container.innerHTML = html;
+  }
+}
+
+function updateHistoryLoadMore() {
+  const wrap = document.getElementById("historyLoadMoreWrap");
+  const btn  = document.getElementById("historyLoadMore");
+  const detail = document.getElementById("historyDetail");
+  if (!wrap || !btn) return;
+  if (detail && detail.style.display !== "none") {
+    wrap.style.display = "none";
+  } else {
+    wrap.style.display = historyHasMore ? "flex" : "none";
+  }
+  btn.disabled = historyLoading;
+  btn.textContent = historyLoading ? "Cargando..." : "Cargar más";
 }
 
 function bindAuditForm() {
@@ -651,73 +798,108 @@ function pdfListHtml(items) {
     : `<li style="font-size:11px;color:#9ca3af">Sin datos</li>`;
 }
 
+async function exportAuditPdf({
+  btn,
+  filename,
+  title,
+  url,
+  score,
+  errors,
+  warnings,
+  good,
+  keywords,
+  content,
+  logLabel = "Audit",
+}) {
+  if (!window.jspdf || !window.html2canvas) {
+    showToast("error", "Librerías PDF no disponibles aún, espera un momento");
+    return;
+  }
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="ri-loader-4-line"></i> Generando...';
+  btn.disabled  = true;
+
+  try {
+    const errorList   = Array.isArray(errors) ? errors : [];
+    const warningList = Array.isArray(warnings) ? warnings : [];
+    const goodList    = Array.isArray(good) ? good : [];
+    const keywordList = Array.isArray(keywords) ? keywords : [];
+    const now = new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
+
+    const container = document.createElement("div");
+    container.style.cssText = "position:fixed;left:-9999px;top:0;width:794px;background:white;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#111827;z-index:-1";
+    container.innerHTML = `<div style="padding:32px 36px">
+      ${pdfHeader(title, url, now)}
+      <div style="background:#f5f3ff;border-radius:10px;padding:18px 24px;margin-bottom:16px;border:1px solid #ddd6fe;display:flex;align-items:center;gap:20px">
+        <div style="text-align:center;min-width:70px">
+          <div style="font-size:36px;font-weight:800;color:#7c3aed">${score}</div>
+          <div style="font-size:10px;color:#6b7280;margin-top:2px">GLOBAL SCORE</div>
+        </div>
+        <div style="flex:1;font-size:11px;color:#4c1d95">${url ? `<strong>URL:</strong> ${url}` : "Auditoría SEO completada"}</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:12px">
+        <div style="flex:1;background:#fff1f2;border-radius:8px;padding:14px;border:1px solid #fecdd3">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#e11d48;margin-bottom:8px">Errores (${errorList.length})</div>
+          <ul style="margin:0;padding-left:16px">${pdfListHtml(errorList)}</ul>
+        </div>
+        <div style="flex:1;background:#fffbeb;border-radius:8px;padding:14px;border:1px solid #fde68a">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#d97706;margin-bottom:8px">Advertencias (${warningList.length})</div>
+          <ul style="margin:0;padding-left:16px">${pdfListHtml(warningList)}</ul>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:12px">
+        <div style="flex:1;background:#f0fdf4;border-radius:8px;padding:14px;border:1px solid #bbf7d0">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#16a34a;margin-bottom:8px">Buenas Prácticas (${goodList.length})</div>
+          <ul style="margin:0;padding-left:16px">${pdfListHtml(goodList)}</ul>
+        </div>
+        <div style="flex:1;background:#f0f9ff;border-radius:8px;padding:14px;border:1px solid #bae6fd">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#0369a1;margin-bottom:8px">Keywords Sugeridas</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">${keywordList.length ? keywordList.map(k=>`<span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:100px;font-size:10px">${k}</span>`).join("") : `<span style="font-size:11px;color:#9ca3af">Sin datos</span>`}</div>
+        </div>
+      </div>
+      ${content && content !== "N/A" && content !== "Sin datos aun" ? pdfSection("#8b5cf6", "Sugerencia de Contenido IA", content) : ""}
+      <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb">
+        <span style="font-size:13px;color:#7c3aed;font-weight:700">EchoSEO</span>
+      </div>
+    </div>`;
+    document.body.appendChild(container);
+    await runPdfExport(container, filename, btn, originalHtml);
+    showToast("success", "PDF descargado correctamente");
+  } catch (err) {
+    console.error(`${logLabel} PDF export error:`, err);
+    showToast("error", "No se pudo generar el PDF");
+    btn.innerHTML = originalHtml;
+    btn.disabled  = false;
+  }
+}
+
 function bindAuditExport() {
   const btn = document.getElementById("auditExportBtn");
   if (!btn) return;
   btn.addEventListener("click", async () => {
-    if (!window.jspdf || !window.html2canvas) {
-      showToast("error", "Librerías PDF no disponibles aún, espera un momento"); return;
-    }
-    const originalHtml = btn.innerHTML;
-    btn.innerHTML = '<i class="ri-loader-4-line"></i> Generando...';
-    btn.disabled  = true;
-    try {
-      const getList = (id) => [...document.querySelectorAll(`#${id} li`)].map(li => li.innerText.trim()).filter(Boolean);
-      const getText = (id) => document.getElementById(id)?.innerText.trim() || "N/A";
-      const url      = document.getElementById("auditUrlInput")?.value || "";
-      const score    = getText("auditScore");
-      const errors   = getList("auditErrors");
-      const warnings = getList("auditWarnings");
-      const good     = getList("auditGood");
-      const keywords = getList("auditKeywords");
-      const content  = getText("auditContent");
-      const now      = new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
+    const getList = (id) => [...document.querySelectorAll(`#${id} li`)].map(li => li.innerText.trim()).filter(Boolean);
+    const getText = (id) => document.getElementById(id)?.innerText.trim() || "N/A";
+    const url      = document.getElementById("auditUrlInput")?.value || "";
+    const score    = getText("auditScore");
+    const errors   = getList("auditErrors");
+    const warnings = getList("auditWarnings");
+    const good     = getList("auditGood");
+    const keywords = getList("auditKeywords");
+    const content  = getText("auditContent");
 
-      const container = document.createElement("div");
-      container.style.cssText = "position:fixed;left:-9999px;top:0;width:794px;background:white;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#111827;z-index:-1";
-      container.innerHTML = `<div style="padding:32px 36px">
-        ${pdfHeader("Reporte de Auditoría SEO", url, now)}
-        <div style="background:#f5f3ff;border-radius:10px;padding:18px 24px;margin-bottom:16px;border:1px solid #ddd6fe;display:flex;align-items:center;gap:20px">
-          <div style="text-align:center;min-width:70px">
-            <div style="font-size:36px;font-weight:800;color:#7c3aed">${score}</div>
-            <div style="font-size:10px;color:#6b7280;margin-top:2px">GLOBAL SCORE</div>
-          </div>
-          <div style="flex:1;font-size:11px;color:#4c1d95">${url ? `<strong>URL:</strong> ${url}` : "Auditoría SEO completada"}</div>
-        </div>
-        <div style="display:flex;gap:12px;margin-bottom:12px">
-          <div style="flex:1;background:#fff1f2;border-radius:8px;padding:14px;border:1px solid #fecdd3">
-            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#e11d48;margin-bottom:8px">Errores (${errors.length})</div>
-            <ul style="margin:0;padding-left:16px">${pdfListHtml(errors)}</ul>
-          </div>
-          <div style="flex:1;background:#fffbeb;border-radius:8px;padding:14px;border:1px solid #fde68a">
-            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#d97706;margin-bottom:8px">Advertencias (${warnings.length})</div>
-            <ul style="margin:0;padding-left:16px">${pdfListHtml(warnings)}</ul>
-          </div>
-        </div>
-        <div style="display:flex;gap:12px;margin-bottom:12px">
-          <div style="flex:1;background:#f0fdf4;border-radius:8px;padding:14px;border:1px solid #bbf7d0">
-            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#16a34a;margin-bottom:8px">Buenas Prácticas (${good.length})</div>
-            <ul style="margin:0;padding-left:16px">${pdfListHtml(good)}</ul>
-          </div>
-          <div style="flex:1;background:#f0f9ff;border-radius:8px;padding:14px;border:1px solid #bae6fd">
-            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#0369a1;margin-bottom:8px">Keywords Sugeridas</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px">${keywords.length ? keywords.map(k=>`<span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:100px;font-size:10px">${k}</span>`).join("") : `<span style="font-size:11px;color:#9ca3af">Sin datos</span>`}</div>
-          </div>
-        </div>
-        ${content && content !== "N/A" && content !== "Sin datos aun" ? pdfSection("#8b5cf6", "Sugerencia de Contenido IA", content) : ""}
-        <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb">
-          <span style="font-size:13px;color:#7c3aed;font-weight:700">EchoSEO</span>
-        </div>
-      </div>`;
-      document.body.appendChild(container);
-      await runPdfExport(container, "auditoria-seo-echoseo.pdf", btn, originalHtml);
-      showToast("success", "PDF descargado correctamente");
-    } catch (err) {
-      console.error("Audit PDF export error:", err);
-      showToast("error", "No se pudo generar el PDF");
-      btn.innerHTML = originalHtml;
-      btn.disabled  = false;
-    }
+    await exportAuditPdf({
+      btn,
+      filename: "auditoria-seo-echoseo.pdf",
+      title: "Reporte de Auditoría SEO",
+      url,
+      score,
+      errors,
+      warnings,
+      good,
+      keywords,
+      content,
+      logLabel: "Audit",
+    });
   });
 }
 
@@ -849,7 +1031,154 @@ function bindAnalyzeForm() {
   });
 }
 
-function loadHistory() { console.log("History panel defer"); }
+function bindHistoryControls() {
+  const backBtn = document.getElementById("historyBackBtn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      showHistoryList();
+      updateHistoryLoadMore();
+      window.scrollTo(0, 0);
+    });
+  }
+
+  const container = document.getElementById("historyContainer");
+  if (container) {
+    container.addEventListener("click", (event) => {
+      const btn = event.target.closest(".history-view-btn");
+      if (!btn) return;
+      const id = Number(btn.dataset.historyId);
+      const record = historyCache.find((a) => a.id === id);
+      if (!record || !record.report_data) {
+        showToast("warning", "No hay detalles disponibles para esta auditoría");
+        return;
+      }
+      renderHistoryDetail(record);
+    });
+  }
+
+  const loadMoreBtn = document.getElementById("historyLoadMore");
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener("click", () => {
+      if (!historyHasMore || historyLoading) return;
+      fetchHistoryPage({ append: true });
+    });
+  }
+
+  const exportBtn = document.getElementById("historyExportBtn");
+  if (exportBtn) {
+    exportBtn.addEventListener("click", async () => {
+      if (!historySelectedReport || !historySelectedReport.seo_analysis) {
+        showToast("warning", "Selecciona una auditoría para exportar");
+        return;
+      }
+      const analysis = historySelectedReport.seo_analysis || {};
+      await exportAuditPdf({
+        btn: exportBtn,
+        filename: "auditoria-seo-historial.pdf",
+        title: "Reporte de Auditoría SEO",
+        url: historySelected?.url || "",
+        score: analysis.global_score ?? "--",
+        errors: analysis.errors,
+        warnings: analysis.warnings,
+        good: analysis.good_practices,
+        keywords: analysis.keyword_suggestions,
+        content: analysis.content_generation,
+        logLabel: "History",
+      });
+    });
+  }
+}
+
+async function fetchHistoryPage({ append = false } = {}) {
+  const container = document.getElementById("historyContainer");
+  const loading   = document.getElementById("historyLoading");
+  if (!container) return;
+
+  if (!append) {
+    showHistoryList();
+    historySelected = null;
+    historySelectedReport = null;
+    historyOffset = 0;
+    historyCache = [];
+    historyHasMore = false;
+  }
+
+  const sessionStr = localStorage.getItem("user_session");
+  if (!sessionStr) {
+    container.innerHTML = `
+      <div class="panel-empty">
+        <h3>Inicia sesión para ver tu historial</h3>
+        <p>Accede con tu cuenta para cargar las auditorías guardadas.</p>
+      </div>`;
+    historyHasMore = false;
+    updateHistoryLoadMore();
+    return;
+  }
+
+  let session = null;
+  try {
+    session = JSON.parse(sessionStr);
+  } catch (err) {
+    console.error("Session parse error:", err);
+    showToast("error", "No se pudo leer la sesión");
+    container.innerHTML = `
+      <div class="panel-empty">
+        <h3>Sesión inválida</h3>
+        <p>Vuelve a iniciar sesión para cargar el historial.</p>
+      </div>`;
+    historyHasMore = false;
+    updateHistoryLoadMore();
+    return;
+  }
+
+  historyLoading = true;
+  updateHistoryLoadMore();
+
+  if (!append && loading) {
+    loading.style.display = "flex";
+    loading.setAttribute("aria-hidden", "false");
+  }
+
+  try {
+    const response = await fetch(`../../backend/api/seo/history.php?user_id=${encodeURIComponent(session.id)}&limit=${HISTORY_PAGE_SIZE}&offset=${historyOffset}`);
+    const data = await response.json();
+    if (!response.ok || data.status !== "success") {
+      throw new Error(data?.message || "No se pudo cargar el historial");
+    }
+    const pageItems = Array.isArray(data.data) ? data.data : [];
+    historyCache = append ? historyCache.concat(pageItems) : pageItems;
+    renderHistoryList(pageItems, { append });
+    historyHasMore = Boolean(data.pagination?.has_more);
+    const nextOffset = Number(data.pagination?.offset ?? historyOffset) + Number(data.pagination?.limit ?? HISTORY_PAGE_SIZE);
+    historyOffset = Number.isNaN(nextOffset) ? historyOffset + HISTORY_PAGE_SIZE : nextOffset;
+    updateHistoryLoadMore();
+  } catch (err) {
+    console.error("History load error:", err);
+    if (!append) {
+      showToast("error", "No se pudo cargar el historial");
+      container.innerHTML = `
+        <div class="panel-empty">
+          <h3>Error al cargar el historial</h3>
+          <p>Inténtalo nuevamente en unos minutos.</p>
+        </div>`;
+    } else {
+      showToast("error", "No se pudo cargar más auditorías");
+    }
+    historyHasMore = false;
+    updateHistoryLoadMore();
+  } finally {
+    if (!append && loading) {
+      loading.style.display = "none";
+      loading.setAttribute("aria-hidden", "true");
+    }
+    historyLoading = false;
+    updateHistoryLoadMore();
+  }
+}
+
+async function loadHistory() {
+  await fetchHistoryPage({ append: false });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   enforceSession();
@@ -864,6 +1193,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindCopyButtons();
   bindContentExport();
   bindAuditExport();
+  bindHistoryControls();
   loadHistory();
 
   const pendingUrl = localStorage.getItem("pending_audit_url");

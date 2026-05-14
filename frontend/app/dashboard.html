@@ -215,6 +215,79 @@
               <p>Cargando historial...</p>
             </div>
             <div id="historyContainer" class="history-container"></div>
+            <div class="history-load-more" id="historyLoadMoreWrap" style="display: none">
+              <button class="history-load-more-btn" id="historyLoadMore" type="button">
+                Cargar más
+              </button>
+            </div>
+            <div id="historyDetail" class="audit-results-card" style="display: none">
+              <button class="history-back-btn" id="historyBackBtn" type="button">
+                <i class="ri-arrow-left-line" aria-hidden="true"></i> Volver al historial
+              </button>
+              <div class="results-header">
+                <div>
+                  <p class="results-eyebrow">Detalle de auditoría</p>
+                  <h2 id="historyAuditStatus">Auditoría SEO</h2>
+                  <p class="history-meta" id="historyAuditMeta">—</p>
+                </div>
+                <button class="btn-export" id="historyExportBtn" type="button">
+                  <i class="ri-download-line"></i> Exportar
+                </button>
+              </div>
+              <div class="results-grid">
+                <div class="results-island island-score">
+                  <h3 class="island-title">
+                    <i class="ri-trophy-line"></i> GLOBAL SCORE
+                  </h3>
+                  <div class="score-circular">
+                    <span id="historyAuditScore">--</span>
+                  </div>
+                  <p class="score-text" id="historyAuditScoreText">
+                    Resultado de la auditoría
+                  </p>
+                </div>
+                <div class="results-island island-errors">
+                  <h3 class="island-title">
+                    <i class="ri-error-warning-line"></i> ERRORES
+                  </h3>
+                  <ul id="historyAuditErrors" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island island-warnings">
+                  <h3 class="island-title">
+                    <i class="ri-alert-line"></i> ADVERTENCIAS
+                  </h3>
+                  <ul id="historyAuditWarnings" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island island-good">
+                  <h3 class="island-title">
+                    <i class="ri-checkbox-circle-line"></i> BUENAS PRÁCTICAS
+                  </h3>
+                  <ul id="historyAuditGood" class="results-list">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island island-keywords">
+                  <h3 class="island-title">
+                    <i class="ri-key-2-line"></i> KEYWORDS SUGERIDAS
+                  </h3>
+                  <ul id="historyAuditKeywords" class="keyword-pills">
+                    <li>Sin datos aun</li>
+                  </ul>
+                </div>
+                <div class="results-island island-content">
+                  <h3 class="island-title">
+                    <i class="ri-magic-line"></i> SUGERENCIA DE CONTENIDO (IA)
+                  </h3>
+                  <div class="ai-content-box" id="historyAuditContent">
+                    Sin datos aun
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
