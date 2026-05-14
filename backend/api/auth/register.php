@@ -9,10 +9,15 @@ if (in_array($origin, $allowedOrigins)) {
 }
 // Permitir peticiones desde cualquier origen (CORS) - Muy útil para desarrollo
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once '../../services/AuthService.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // Solo aceptamos peticiones POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -37,7 +42,8 @@ if ($result['success']) {
     echo json_encode([
         "status" => "success",
         "message" => $result['message'],
-        "user_id" => $result['user_id']
+        "user_id" => $result['user_id'],
+        "email" => $email
     ]);
 } else {
     http_response_code(400); // 400 = Error de petición

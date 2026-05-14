@@ -9,10 +9,15 @@ if (in_array($origin, $allowedOrigins)) {
 }
 // Cabeceras CORS y configuración de JSON
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once '../../services/AuthService.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // Solo aceptamos POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

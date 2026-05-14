@@ -41,13 +41,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // Verificar si hay una URL pendiente para auditar
             const pendingUrl = localStorage.getItem("pending_seo_url");
             if (pendingUrl) {
-              // Ir directamente a auditoría con la URL guardada
-              // Nota: Tu compañero implementará la página de resultados
-              alert(`¡Bienvenido! Iniciando auditoría para: ${pendingUrl}`);
+              localStorage.setItem("pending_audit_url", pendingUrl);
               localStorage.removeItem("pending_seo_url");
-            } else {
-              window.location.href = "dashboard.html";
             }
+            window.location.href = "dashboard.html";
           }, 1500);
         } else {
           showToast("error", result.message || "Error al registrar.");
