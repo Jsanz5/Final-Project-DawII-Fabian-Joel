@@ -162,9 +162,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // el header se oscurece al hacer scroll
   const header = document.getElementById("hdr");
   if (header) {
-    window.addEventListener("scroll", () => {
+    const updateScrollOffset = () => {
+      const headerStyle = window.getComputedStyle(header);
+      const headerTop = Number.parseFloat(headerStyle.top) || 0;
+      const extraGap = 24;
+      const totalOffset = Math.round(
+        header.offsetHeight + headerTop + extraGap,
+      );
+      document.documentElement.style.setProperty(
+        "--scroll-offset",
+        `${totalOffset}px`,
+      );
+    };
+
+    const handleScroll = () => {
       header.classList.toggle("scrolled", window.scrollY > 10);
-    });
+      updateScrollOffset();
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", updateScrollOffset);
+    window.addEventListener("load", updateScrollOffset);
+    updateScrollOffset();
   }
 
   // este campo anima del scroll a medida que aparecen los elementos

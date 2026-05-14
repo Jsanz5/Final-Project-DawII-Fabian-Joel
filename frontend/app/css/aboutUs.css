@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap");
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --color-cloud-canvas: #f9fafb;
   --color-porcelain-surface: #ffffff;
@@ -33,9 +37,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-html {
-  scroll-behavior: smooth;
 }
 body {
   background: linear-gradient(135deg, #f8f3ff 0%, #f4fbff 45%, #fff7f0 100%);

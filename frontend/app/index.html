@@ -26,7 +26,10 @@
         <div class="logo-mark">
           <i class="ri-pulse-fill"></i>
         </div>
-        <span class="logo-name"><span style="color: #91e0ff">Echo</span><em style="color: #f1ccff">SEO</em></span>
+        <span class="logo-name"
+          ><span style="color: #91e0ff">Echo</span
+          ><em style="color: #f1ccff">SEO</em></span
+        >
       </a>
       <div class="nav-wrapper" id="navWrapper">
         <nav>
@@ -34,7 +37,9 @@
           <a href="#Herramientas">Herramientas</a>
           <a href="#Soluciones">Soluciones</a>
           <!-- <a href="#Blog">Blog</a> -->
-          <a href="#casos-exito">Reseñas</a>
+          <!-- Busca el botón en tu menú de navegación y déjalo así -->
+<a href="#casos-exito" onclick="event.preventDefault(); document.getElementById('casos-exito').scrollIntoView({ behavior: 'smooth', block: 'start' });">Reseñas</a>
+
         </nav>
         <div class="header-actions">
           <button
@@ -71,7 +76,7 @@
         crecer en buscadores y plataformas de IA. Datos en tiempo real.
       </p>
 
-      <div class="hero-search">
+      <div class="hero-search" id="buscador-principal">
         <div class="search-box">
           <div class="search-input-row">
             <input
@@ -466,8 +471,8 @@
     </div>
 
     <!-- FEATURES -->
-    <section class="section">
-      <div class="section-inner" id="Herramientas">
+    <section class="section" id="Herramientas">
+      <div class="section-inner">
         <p class="section-label reveal">Herramientas potentes</p>
         <h2 class="section-h reveal">
           Todo lo que necesitas para <span class="hi">liderar</span> Google y la
@@ -622,7 +627,14 @@
         Tu competencia ya usa datos para tomar decisiones. No te quedes atrás.
       </p>
       <div class="cta-final-btns">
-        <button class="btn-white" onclick="window.location.href='register.html'">
+        <button
+          class="btn-white"
+          onclick="
+            const input = document.getElementById('heroInput');
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => input.focus(), 600);
+          "
+        >
           <i class="ri-rocket-2-fill"></i> Empieza tu análisis gratuito
         </button>
         <!-- <button class="btn-outline-white">Hablar con ventas</button> Proximamente.!-->
@@ -637,7 +649,10 @@
             <div class="logo-mark">
               <i class="ri-pulse-fill"></i>
             </div>
-            <span class="logo-name"><span style="color: #91e0ff">Echo</span><em style="color: #f1ccff">SEO</em></span>
+            <span class="logo-name"
+              ><span style="color: #91e0ff">Echo</span
+              ><em style="color: #f1ccff">SEO</em></span
+            >
           </a>
           <p>
             La plataforma de inteligencia SEO más completa para agencias, marcas
@@ -652,8 +667,18 @@
         <div class="footer-col">
           <h4>Empresa</h4>
           <a href="company.html">Quiénes somos</a>
-          <a href="#casos-exito">Casos de éxito</a>
+          <a
+            href="#casos-exito"
+            onclick="
+              event.preventDefault();
+              document
+                .getElementById('casos-exito')
+                .scrollIntoView({ behavior: 'smooth', block: 'start' });
+            "
+            >Casos de éxito</a
+          >
         </div>
+
         <div class="footer-col">
           <h4>Soporte</h4>
           <a href="#">Documentación</a><a href="#">Centro de ayuda</a

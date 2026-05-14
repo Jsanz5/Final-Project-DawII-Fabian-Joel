@@ -1,4 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap");
+
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --color-cloud-canvas: #f9fafb;
   --color-porcelain-surface: #ffffff;
@@ -49,6 +54,7 @@
   --border: var(--color-platinum-border);
   --font-display: var(--font-pp-editorial-new);
   --font-body: var(--font-switzer);
+  --scroll-offset: 120px;
 }
 *,
 *::before,
@@ -56,9 +62,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-html {
-  scroll-behavior: smooth;
 }
 body {
   background: var(--color-cloud-canvas);
@@ -887,6 +890,9 @@ nav a:hover::before {
   max-width: 1140px;
   margin: 0 auto;
 }
+#Herramientas {
+  scroll-margin-top: var(--scroll-offset);
+}
 .section-label {
   font-size: 0.75rem;
   font-weight: 700;
@@ -1024,6 +1030,7 @@ nav a:hover::before {
 .testi-section {
   padding: 96px 5%;
   background: #fafafa;
+  scroll-margin-top: var(--scroll-offset);
 }
 .testi-grid {
   max-width: 1200px;
